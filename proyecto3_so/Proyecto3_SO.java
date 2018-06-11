@@ -115,7 +115,7 @@ public class Proyecto3_SO {
                                     System.out.println("un archivo con ruta “virtual” de MI File System será copiado a otra ruta “virtual” de MI File System. ");
                                     break;
                                 default:
-                                    System.out.println("opcion no valida");
+                                    System.out.println("opcion no valida.");
                             }
                             break;
                             
