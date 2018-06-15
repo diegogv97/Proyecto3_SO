@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class DiscoVirtual {
     private static DiscoVirtual single_instance = null;
-    
     Directorio raiz;
  
 
@@ -25,7 +24,16 @@ public class DiscoVirtual {
             return true;
         return false;
     }
-    
+
+    public Directorio getRaiz() {
+        return raiz;
+    }
+
+    public void setRaiz(Directorio raiz) {
+        this.raiz = raiz;
+    }
     
  
+ 
+
 }

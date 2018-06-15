@@ -21,4 +21,17 @@ public class Directorio {
         this.nombre = nombre;
     }
     
+    public void addDirectorio (Directorio nuevo){
+        directorios.add(nuevo);
+    }
+    
+    public Directorio getDirectorio(String nombre) throws Exception{
+        for(Directorio d : directorios){
+            if (d.getNombre().equals(nombre)){
+                return d;
+            }
+        }
+        throw new Exception("DIrectorio no existe");
+    }
+    
 }

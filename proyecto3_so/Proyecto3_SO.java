@@ -1,10 +1,13 @@
 
 package proyecto3_so;
 
+import Entidades.Directorio;
 import Entidades.DiscoVirtual;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -13,7 +16,8 @@ public class Proyecto3_SO {
     public static void main(String[] args) {
         BufferedReader br = null;
         String input = "";
-        DiscoVirtual disco_virtual;
+        DiscoVirtual disco_virtual = null;
+        Directorio dir_actual = null;
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
             
@@ -46,7 +50,7 @@ public class Proyecto3_SO {
                             input = br.readLine();
                             int size = input.length();
                             //crear archivo. 
-                            System.out.println("El conenido es: " + input + "tamaño: " + size);
+                            System.out.println("El contenido es: " + input + "tamaño: " + size);
                             System.out.println("    tamaño: " + size);
                             break;
                             
@@ -57,6 +61,7 @@ public class Proyecto3_SO {
                             }
                             String nombre_directorio = input.substring("MKDIR ".length());
                             System.out.println("creando el directorio " + nombre_directorio);
+                            dir_actual.addDirectorio(new Directorio(nombre_directorio));
                             break;
                             
                         case "CHDIR":
@@ -64,8 +69,19 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String directorio = input.substring("CHDIR ".length());
-                            System.out.println("yendo al directorio " + directorio);
+                            String ir_directorio = input.substring("CHDIR ".length());
+                            System.out.println("yendo al directorio " + ir_directorio);
+                            String[] tokens_dirs = ir_directorio.split("/");
+                            Directorio temp = dir_actual;
+                            dir_actual = disco_virtual.getRaiz();
+                            for(String s : tokens_dirs){
+                                try {
+                                    dir_actual = dir_actual.getDirectorio(s);
+                                } catch (Exception ex) {
+                                    System.out.println("Directorio no existe");
+                                }
+                            }
+                            dir_actual = temp;
                             break;
                             
                         case "LDIR":
