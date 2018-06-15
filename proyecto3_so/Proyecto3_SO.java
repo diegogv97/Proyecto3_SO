@@ -18,6 +18,10 @@ public class Proyecto3_SO {
         String input = "";
         DiscoVirtual disco_virtual = null;
         Directorio dir_actual = null;
+
+        String dirRaiz = "";
+
+
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
             
@@ -27,7 +31,7 @@ public class Proyecto3_SO {
                 System.out.println("               Diego Guzman");
                 System.out.println("               Josue Morales\n\n");
                 while(true){
-                    System.out.print("/:  > ");
+                    System.out.print(dirRaiz + "/:  > ");
                     input = br.readLine();
                     String[] tokens = input.split(" ");
                     String comando = tokens[0];
@@ -38,7 +42,8 @@ public class Proyecto3_SO {
                                 break;
                             }
                             System.out.println("creando disco " +tokens[3]);
-                            disco_virtual = DiscoVirtual.getInstance(tokens[3]);
+                            disco_virtual = DiscoVirtual.getInstance(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), tokens[3]);
+                            dirRaiz = tokens[3];
                             break;
                             
                         case "FLE":
@@ -50,8 +55,13 @@ public class Proyecto3_SO {
                             input = br.readLine();
                             int size = input.length();
                             //crear archivo. 
+
                             System.out.println("El contenido es: " + input + "tamaño: " + size);
                             System.out.println("    tamaño: " + size);
+
+                            System.out.println("El conenido es: " + input + "tamaÃ±o: " + size);
+                            System.out.println("    tamaÃ±o: " + size);
+
                             break;
                             
                         case "MKDIR":
@@ -122,13 +132,13 @@ public class Proyecto3_SO {
                             int opcion = Integer.parseInt(br.readLine());
                             switch(opcion){
                                 case 10:
-                                    System.out.println("un archivo con ruta “real” será copiado a una ruta “virtual” de MI File System. ");
+                                    System.out.println("un archivo con ruta â€œrealâ€� serÃ¡ copiado a una ruta â€œvirtualâ€� de MI File System. ");
                                     break;
                                 case 11:
-                                    System.out.println("un archivo con ruta “virtual” de MI File System será copiado a una ruta “real");
+                                    System.out.println("un archivo con ruta â€œvirtualâ€� de MI File System serÃ¡ copiado a una ruta â€œreal");
                                     break;
                                 case 12:
-                                    System.out.println("un archivo con ruta “virtual” de MI File System será copiado a otra ruta “virtual” de MI File System. ");
+                                    System.out.println("un archivo con ruta â€œvirtualâ€� de MI File System serÃ¡ copiado a otra ruta â€œvirtualâ€� de MI File System. ");
                                     break;
                                 default:
                                     System.out.println("opcion no valida.");
