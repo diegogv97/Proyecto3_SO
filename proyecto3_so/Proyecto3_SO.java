@@ -56,11 +56,11 @@ public class Proyecto3_SO {
                             int size = input.length();
                             //crear archivo. 
 
-                            System.out.println("El contenido es: " + input + "tamaño: " + size);
-                            System.out.println("    tamaño: " + size);
+                            System.out.println("El contenido es: " + input + "tamanno: " + size);
+                            System.out.println("    tamanno: " + size);
 
-                            System.out.println("El conenido es: " + input + "tamaÃ±o: " + size);
-                            System.out.println("    tamaÃ±o: " + size);
+                            System.out.println("El conenido es: " + input + "tamanno: " + size);
+                            System.out.println("    tamanno: " + size);
 
                             break;
                             
@@ -132,13 +132,13 @@ public class Proyecto3_SO {
                             int opcion = Integer.parseInt(br.readLine());
                             switch(opcion){
                                 case 10:
-                                    System.out.println("un archivo con ruta â€œrealâ€� serÃ¡ copiado a una ruta â€œvirtualâ€� de MI File System. ");
+                                    System.out.println("un archivo con ruta virtual sera copiado a una ruta â€œvirtualâ€� de MI File System. ");
                                     break;
                                 case 11:
-                                    System.out.println("un archivo con ruta â€œvirtualâ€� de MI File System serÃ¡ copiado a una ruta â€œreal");
+                                    System.out.println("un archivo con ruta virtual de MI File System serÃ¡ copiado a una ruta â€œreal");
                                     break;
                                 case 12:
-                                    System.out.println("un archivo con ruta â€œvirtualâ€� de MI File System serÃ¡ copiado a otra ruta â€œvirtualâ€� de MI File System. ");
+                                    System.out.println("un archivo con ruta virtual de MI File System serÃ¡ copiado a otra ruta â€œvirtualâ€� de MI File System. ");
                                     break;
                                 default:
                                     System.out.println("opcion no valida.");
