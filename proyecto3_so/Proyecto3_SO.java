@@ -133,6 +133,10 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
+                            System.out.println("Directorios: ");
+                            dir_actual.imprimirDirectorios();
+                            System.out.println("Archivos: ");
+                            dir_actual.imprimirArchivos();
                             break;
                             
                         case "MFLE":
