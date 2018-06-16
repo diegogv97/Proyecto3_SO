@@ -69,5 +69,17 @@ public class Directorio {
         }
         throw new Exception("DIrectorio no existe");
     }
+
+    public void imprimirDirectorios() {
+        for(Directorio d: directorios){
+            System.out.println("    " + d.getNombre());
+        }
+    }
+
+    public void imprimirArchivos() {
+        for (Archivo a : archivos){
+            System.out.println("    " + a.getNombre()+ "." + a.getExtension());
+        }
+    }
     
 }
