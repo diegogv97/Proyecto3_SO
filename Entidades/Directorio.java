@@ -35,6 +35,12 @@ public class Directorio {
         }
         throw new Exception("DIrectorio no existe");
     }
+    public ArrayList<Directorio> getListaDirectorios(){
+        return directorios; 
+    }
+    public ArrayList<Archivo> getListaArchivos(){
+        return archivos; 
+    }
     
     public boolean existeDirectorio(String nombre){
         for (Directorio d: directorios){
