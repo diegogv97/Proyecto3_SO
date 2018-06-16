@@ -44,6 +44,7 @@ public class Proyecto3_SO {
                             System.out.println("creando disco " +tokens[3]);
                             disco_virtual = DiscoVirtual.getInstance(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), tokens[3]);
                             dirRaiz = tokens[3];
+                            dir_actual = disco_virtual.getRaiz();
                             break;
                             
                         case "FLE":
@@ -70,8 +71,18 @@ public class Proyecto3_SO {
                                 break;
                             }
                             String nombre_directorio = input.substring("MKDIR ".length());
-                            System.out.println("creando el directorio " + nombre_directorio);
-                            dir_actual.addDirectorio(new Directorio(nombre_directorio));
+                            if(!dir_actual.existeDirectorio(nombre_directorio)){
+                                System.out.println("Creando directorio " + nombre_directorio);
+                                dir_actual.addDirectorio(new Directorio(nombre_directorio));
+                            }
+                            else{
+                                 System.out.print("Directorio ya existe. Digite R para reemplazar, cualquier otro para finalizar la accion: ");
+                                 input = br.readLine();
+                                 if(input.equals("R")){
+                                     System.out.println("Reemplazando directorio " + nombre_directorio);
+                                     dir_actual.remplazarDirectorio(new Directorio(nombre_directorio));
+                                 }
+                            }
                             break;
                             
                         case "CHDIR":
@@ -80,18 +91,42 @@ public class Proyecto3_SO {
                                 break;
                             }
                             String ir_directorio = input.substring("CHDIR ".length());
-                            System.out.println("yendo al directorio " + ir_directorio);
-                            String[] tokens_dirs = ir_directorio.split("/");
-                            Directorio temp = dir_actual;
-                            dir_actual = disco_virtual.getRaiz();
-                            for(String s : tokens_dirs){
-                                try {
-                                    dir_actual = dir_actual.getDirectorio(s);
-                                } catch (Exception ex) {
-                                    System.out.println("Directorio no existe");
+                            
+                            String[] tokens_dirs;
+                            if (ir_directorio.equals("..")){
+                                System.out.println("regresando al directorio anterior");
+                                dir_actual = disco_virtual.getRaiz();
+                                tokens_dirs= dirRaiz.split("/");
+                                dirRaiz = disco_virtual.getRaiz().getNombre();
+                                 for(int i = 0; true; i++){
+                                    try {
+                                        String botar = tokens_dirs[i+2];
+                                        dir_actual = dir_actual.getDirectorio(tokens_dirs[i+1]);
+                                        dirRaiz = dirRaiz + "/"+tokens_dirs[i+1];
+                                        System.out.println(tokens_dirs[i+1]);
+                                    }catch (Exception ex) {
+                                        break;
+                                    }
+                                    
+                                } 
+                            }
+                            else{
+                                System.out.println("yendo al directorio " + ir_directorio);
+                                boolean func = true;
+                                tokens_dirs = ir_directorio.split("/");
+                                Directorio temp = dir_actual;
+                                for(String s : tokens_dirs){
+                                    try {
+                                        dir_actual = dir_actual.getDirectorio(s);
+                                        dirRaiz = dirRaiz + "/" + ir_directorio;
+                                    } catch (Exception ex) {
+                                        System.out.println("Directorio no existe");
+                                        dir_actual = temp;
+                                        func = false;
+                                        break;
+                                    }
                                 }
                             }
-                            dir_actual = temp;
                             break;
                             
                         case "LDIR":
