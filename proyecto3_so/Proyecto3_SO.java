@@ -45,6 +45,13 @@ public class Proyecto3_SO {
                             System.out.println("creando disco " +tokens[3]);
                             disco_virtual = DiscoVirtual.getInstance(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), tokens[3]);
                             dirRaiz = tokens[3];
+
+                            //disco_virtual.getSector(2);
+                            //disco_virtual.escribirSector("contenido\ndel\nSector", 1);
+                            //disco_virtual.escribirSector("contenido\ndel\nSector cero (0)", -1);
+                            //disco_virtual.escribirSector("contenido\ndel\nSector dos (2)", -1);
+                            //int l[] = disco_virtual.escribirSectores("HOLA", new int[0]);
+                            
                             dir_actual = disco_virtual.getRaiz();
                             break;
                             
