@@ -103,7 +103,6 @@ public class Proyecto3_SO {
                                         String botar = tokens_dirs[i+2];
                                         dir_actual = dir_actual.getDirectorio(tokens_dirs[i+1]);
                                         dirRaiz = dirRaiz + "/"+tokens_dirs[i+1];
-                                        System.out.println(tokens_dirs[i+1]);
                                     }catch (Exception ex) {
                                         break;
                                     }
@@ -118,7 +117,7 @@ public class Proyecto3_SO {
                                 for(String s : tokens_dirs){
                                     try {
                                         dir_actual = dir_actual.getDirectorio(s);
-                                        dirRaiz = dirRaiz + "/" + ir_directorio;
+                                        dirRaiz = dirRaiz + "/" + dir_actual.getNombre();
                                     } catch (Exception ex) {
                                         System.out.println("Directorio no existe");
                                         dir_actual = temp;
