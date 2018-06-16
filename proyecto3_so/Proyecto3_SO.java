@@ -3,6 +3,7 @@ package proyecto3_so;
 
 import Entidades.Directorio;
 import Entidades.DiscoVirtual;
+import Entidades.Archivo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,12 +45,14 @@ public class Proyecto3_SO {
                             System.out.println("creando disco " +tokens[3]);
                             disco_virtual = DiscoVirtual.getInstance(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), tokens[3]);
                             dirRaiz = tokens[3];
+
                             //disco_virtual.getSector(2);
                             //disco_virtual.escribirSector("contenido\ndel\nSector", 1);
                             //disco_virtual.escribirSector("contenido\ndel\nSector cero (0)", -1);
                             //disco_virtual.escribirSector("contenido\ndel\nSector dos (2)", -1);
                             //int l[] = disco_virtual.escribirSectores("HOLA", new int[0]);
                             
+                            dir_actual = disco_virtual.getRaiz();
                             break;
                             
                         case "FLE":
@@ -76,8 +79,18 @@ public class Proyecto3_SO {
                                 break;
                             }
                             String nombre_directorio = input.substring("MKDIR ".length());
-                            System.out.println("creando el directorio " + nombre_directorio);
-                            dir_actual.addDirectorio(new Directorio(nombre_directorio));
+                            if(!dir_actual.existeDirectorio(nombre_directorio)){
+                                System.out.println("Creando directorio " + nombre_directorio);
+                                dir_actual.addDirectorio(new Directorio(nombre_directorio));
+                            }
+                            else{
+                                 System.out.print("Directorio ya existe. Digite R para reemplazar, cualquier otro para finalizar la accion: ");
+                                 input = br.readLine();
+                                 if(input.equals("R")){
+                                     System.out.println("Reemplazando directorio " + nombre_directorio);
+                                     dir_actual.remplazarDirectorio(new Directorio(nombre_directorio));
+                                 }
+                            }
                             break;
                             
                         case "CHDIR":
@@ -86,18 +99,41 @@ public class Proyecto3_SO {
                                 break;
                             }
                             String ir_directorio = input.substring("CHDIR ".length());
-                            System.out.println("yendo al directorio " + ir_directorio);
-                            String[] tokens_dirs = ir_directorio.split("/");
-                            Directorio temp = dir_actual;
-                            dir_actual = disco_virtual.getRaiz();
-                            for(String s : tokens_dirs){
-                                try {
-                                    dir_actual = dir_actual.getDirectorio(s);
-                                } catch (Exception ex) {
-                                    System.out.println("Directorio no existe");
+                            
+                            String[] tokens_dirs;
+                            if (ir_directorio.equals("..")){
+                                System.out.println("regresando al directorio anterior");
+                                dir_actual = disco_virtual.getRaiz();
+                                tokens_dirs= dirRaiz.split("/");
+                                dirRaiz = disco_virtual.getRaiz().getNombre();
+                                 for(int i = 0; true; i++){
+                                    try {
+                                        String botar = tokens_dirs[i+2];
+                                        dir_actual = dir_actual.getDirectorio(tokens_dirs[i+1]);
+                                        dirRaiz = dirRaiz + "/"+tokens_dirs[i+1];
+                                    }catch (Exception ex) {
+                                        break;
+                                    }
+                                    
+                                } 
+                            }
+                            else{
+                                System.out.println("yendo al directorio " + ir_directorio);
+                                boolean func = true;
+                                tokens_dirs = ir_directorio.split("/");
+                                Directorio temp = dir_actual;
+                                for(String s : tokens_dirs){
+                                    try {
+                                        dir_actual = dir_actual.getDirectorio(s);
+                                        dirRaiz = dirRaiz + "/" + dir_actual.getNombre();
+                                    } catch (Exception ex) {
+                                        System.out.println("Directorio no existe");
+                                        dir_actual = temp;
+                                        func = false;
+                                        break;
+                                    }
                                 }
                             }
-                            dir_actual = temp;
                             break;
                             
                         case "LDIR":
@@ -105,6 +141,10 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
+                            System.out.println("Directorios: ");
+                            dir_actual.imprimirDirectorios();
+                            System.out.println("Archivos: ");
+                            dir_actual.imprimirArchivos();
                             break;
                             
                         case "MFLE":
@@ -158,6 +198,11 @@ public class Proyecto3_SO {
                         case "REM":
                             break;
                         case "TREE":
+                            Directorio raiz = disco_virtual.getRaiz();
+                            
+                            System.out.println(raiz.getNombre());
+                            recorrer(raiz,0); 
+                            
                             break;
                             
                         case "FIND":
@@ -194,6 +239,24 @@ public class Proyecto3_SO {
         
     }
     
+    static void recorrer(Directorio dir, int tabs){
+        tabs++;
+        for(Archivo a: dir.getListaArchivos()){
+            imprimirTabs(tabs);
+            System.out.println(a.getNombre());
+        }
+        for(Directorio d: dir.getListaDirectorios()){
+            imprimirTabs(tabs);
+            recorrer(d,tabs+1);
+        }
+        
+    }
+    static void imprimirTabs(int tabs){
+        System.out.println("");
+        for(int i=0;i<tabs;i++){
+            System.out.print("\t");
+        }
+    }
     
     static boolean contarParametros(String[] tokens, int cantParametros){
         int contador = 0;

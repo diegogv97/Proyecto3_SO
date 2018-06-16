@@ -2,6 +2,8 @@
 package Entidades;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Directorio {
     ArrayList<Directorio> directorios = new ArrayList<Directorio>();
@@ -32,6 +34,52 @@ public class Directorio {
             }
         }
         throw new Exception("DIrectorio no existe");
+    }
+    public ArrayList<Directorio> getListaDirectorios(){
+        return directorios; 
+    }
+    public ArrayList<Archivo> getListaArchivos(){
+        return archivos; 
+    }
+    
+    public boolean existeDirectorio(String nombre){
+        for (Directorio d: directorios){
+            if (d.getNombre().equals(nombre))
+                return true;
+        }
+        return false;
+    }
+    
+    public void remplazarDirectorio(Directorio nuevo){
+        try {
+            directorios.remove(getIndexDirectorio(nuevo.getNombre()));
+            directorios.add(nuevo);
+        } catch (Exception ex) {
+            System.out.println("Ha ocurrido un error inesperado");
+        }
+        
+    }
+    
+    
+    private int getIndexDirectorio(String nombre) throws Exception{
+        for (int i = 0; i<= directorios.size(); i++){
+            if(directorios.get(i).getNombre().equals(nombre)){
+                return i;
+            }
+        }
+        throw new Exception("DIrectorio no existe");
+    }
+
+    public void imprimirDirectorios() {
+        for(Directorio d: directorios){
+            System.out.println("    " + d.getNombre());
+        }
+    }
+
+    public void imprimirArchivos() {
+        for (Archivo a : archivos){
+            System.out.println("    " + a.getNombre()+ "." + a.getExtension());
+        }
     }
     
 }
