@@ -14,6 +14,7 @@ public class Archivo {
         this.fecha_creacion = fecha_creacion;
         this.fecha_modificacion = fecha_creacion;
         this.size = size;
+        this.punteros = new int[0];
     }
 
     public String getNombre() {
@@ -56,6 +57,25 @@ public class Archivo {
         this.size = size;
     }
     
-    
+    public boolean escribirArchivo(String contenido){
+    	DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
+        punteros = discoVirtual.escribirSectores(contenido, punteros);
+        System.out.println(punteros.length);
+        
+        // Si el archivo necesitaba mayor cantidad de sectores de los que estan disponibles en el disco virtual,
+        // limpia los sectores que le asigno al archivo e indica que no se pudo guardar
+        if(punteros.length > discoVirtual.getCantSectores()){
+        	System.out.println("No hay suficiente espacio para crear el archivo");
+        	for(int ind = 0; ind < punteros.length; ind++){
+        		if(punteros[ind] == -1 ){
+        			break;
+        		}
+        		discoVirtual.escribirSector("", punteros[ind]);
+        	}
+        	return false;
+        }
+        
+    	return true;
+    }
     
 }

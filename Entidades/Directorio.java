@@ -27,6 +27,10 @@ public class Directorio {
         directorios.add(nuevo);
     }
     
+    public void addArchivo (Archivo nuevo){
+        archivos.add(nuevo);
+    }
+    
     public Directorio getDirectorio(String nombre) throws Exception{
         for(Directorio d : directorios){
             if (d.getNombre().equals(nombre)){

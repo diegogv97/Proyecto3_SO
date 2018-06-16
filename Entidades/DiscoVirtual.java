@@ -153,7 +153,7 @@ public class DiscoVirtual {
 	}
 	
 	// Escribe sobre un sector del archivo (False: no pudo escribir, True: se escribio correctamente)
-	private int escribirSector(String contenidoSector, int sector){
+	public int escribirSector(String contenidoSector, int sector){
 		boolean hayEspacio = false;
 		if(sector >= 0){
 			hayEspacio = true;
