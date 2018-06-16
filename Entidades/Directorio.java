@@ -50,6 +50,14 @@ public class Directorio {
         return false;
     }
     
+    public boolean existeArchivo(String nombre){
+        for (Archivo a: archivos){
+            if (a.getNombre().equals(nombre))
+                return true;
+        }
+        return false;
+    }
+    
     public void remplazarDirectorio(Directorio nuevo){
         try {
             directorios.remove(getIndexDirectorio(nuevo.getNombre()));

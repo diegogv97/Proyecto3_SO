@@ -158,10 +158,25 @@ public class Proyecto3_SO {
                             
                             
                         case "PPT":
+                            boolean isFile = false;
                             if (contarParametros(tokens, 1) == false){
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
+                            
+                            String nom_archivo = input.substring("PPT ".length());
+                            for (Archivo a: dir_actual.getListaArchivos()){
+                                if(nom_archivo.equals(a.getNombre())){
+                                    System.out.println("Extension: "+a.getExtension());
+                                    System.out.println("Fecha creacion: "+a.getFecha_creacion());
+                                    System.out.println("Fecha modificacion: "+a.getFecha_modificacion());
+                                    System.out.println("Tamaño: "+a.getSize());
+                                    isFile = true;
+                                    break;
+                                }
+                            }
+                            if(!isFile)
+                                System.out.println("Archivo no existe en el directorio "+dir_actual.getNombre());
                             break;
                             
                         case "VIEW":
@@ -171,6 +186,7 @@ public class Proyecto3_SO {
                             }
                             String archivoV = input.substring("MFLE ".length());
                             System.out.println("accediendo al contenido de " + archivoV);
+                            
                             break;
                             
                         case "CPY":
@@ -206,6 +222,13 @@ public class Proyecto3_SO {
                             break;
                             
                         case "FIND":
+                            if (contarParametros(tokens, 1) == false){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                            
+                            String nom = input.substring("FIND ".length());
+                            
                             break;
                             
                         case "EXIT":
@@ -243,16 +266,19 @@ public class Proyecto3_SO {
         tabs++;
         for(Archivo a: dir.getListaArchivos()){
             imprimirTabs(tabs);
-            System.out.println(a.getNombre());
+            System.out.println("- Archivo: "+ a.getNombre());
         }
         for(Directorio d: dir.getListaDirectorios()){
             imprimirTabs(tabs);
+            System.out.println("- Directorio: "+d.getNombre());
             recorrer(d,tabs+1);
         }
         
     }
+    
+    
     static void imprimirTabs(int tabs){
-        System.out.println("");
+        //System.out.println("");
         for(int i=0;i<tabs;i++){
             System.out.print("\t");
         }
