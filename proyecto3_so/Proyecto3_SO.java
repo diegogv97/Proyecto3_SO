@@ -3,6 +3,7 @@ package proyecto3_so;
 
 import Entidades.Directorio;
 import Entidades.DiscoVirtual;
+import Entidades.Archivo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -152,6 +153,11 @@ public class Proyecto3_SO {
                         case "REM":
                             break;
                         case "TREE":
+                            Directorio raiz = disco_virtual.getRaiz();
+                            
+                            System.out.println(raiz.getNombre());
+                            recorrer(raiz,0); 
+                            
                             break;
                             
                         case "FIND":
@@ -188,6 +194,24 @@ public class Proyecto3_SO {
         
     }
     
+    static void recorrer(Directorio dir, int tabs){
+        tabs++;
+        for(Archivo a: dir.getListaArchivos()){
+            imprimirTabs(tabs);
+            System.out.println(a.getNombre());
+        }
+        for(Directorio d: dir.getListaDirectorios()){
+            imprimirTabs(tabs);
+            recorrer(d,tabs+1);
+        }
+        
+    }
+    static void imprimirTabs(int tabs){
+        System.out.println("");
+        for(int i=0;i<tabs;i++){
+            System.out.print("\t");
+        }
+    }
     
     static boolean contarParametros(String[] tokens, int cantParametros){
         int contador = 0;
