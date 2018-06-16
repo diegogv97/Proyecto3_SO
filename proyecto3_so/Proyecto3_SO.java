@@ -4,9 +4,11 @@ package proyecto3_so;
 import Entidades.Directorio;
 import Entidades.DiscoVirtual;
 import Entidades.Archivo;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,17 +62,27 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            System.out.print("Ingrese el contenido del archivo: ");
-                            input = br.readLine();
-                            int size = input.length();
-                            //crear archivo. 
-
-                            System.out.println("El contenido es: " + input + "tamanno: " + size);
-                            System.out.println("    tamanno: " + size);
-
-                            System.out.println("El conenido es: " + input + "tamanno: " + size);
-                            System.out.println("    tamanno: " + size);
-
+                            Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
+                            if(dir_actual.existeArchivo(archivoNuevo.getNombre())){
+                            	System.out.println("El nombre de archivo ya existe");
+                            	break;
+                            }
+                            
+                            System.out.print("Ingrese el contenido del archivo (Ctrl+c para finalizar):\n");
+                            //input = br.readLine();
+                            String aux = "";
+                            String contenido = "";
+                            while( !(aux = br.readLine()).equals("EOF")) {
+                                contenido += "\n" + aux;
+                             }
+                            contenido = contenido.substring(1);
+                            
+                            archivoNuevo.setSize(contenido.length());
+                            
+                            if(archivoNuevo.escribirArchivo(contenido)){
+                            	dir_actual.addArchivo(archivoNuevo);
+                            }
+                            
                             break;
                             
                         case "MKDIR":
