@@ -12,7 +12,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+import javax.swing.*;
+import java.awt.*;
 
 
 public class Proyecto3_SO {
@@ -70,7 +71,7 @@ public class Proyecto3_SO {
                             	break;
                             }
                             
-                            System.out.print("Ingrese el contenido del archivo (Ctrl+c para finalizar):\n");
+                            System.out.print("Ingrese el contenido del archivo. Escriba EOF en la ultima linea para terminar:\n");
                             //input = br.readLine();
                             String aux = "";
                             String contenido = "";
@@ -166,8 +167,46 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String archivo = input.substring("MFLE ".length());
-                            System.out.println("accediendo al contenido de " + archivo);
+                            String archivoM = input.substring("MFLE ".length());
+                            System.out.println("accediendo al contenido de " + archivoM);
+                           
+                            String[] temp_extensionM = archivoM.split("\\.");
+                            String extensionM = temp_extensionM[(temp_extensionM.length)-1];
+                            String nombreM = archivoM.substring(0, archivoM.lastIndexOf("." + extensionM));
+                            String contenidoM = "";
+                            Archivo arch_buscado = null;
+                            try {
+                                arch_buscado = dir_actual.getArchivo(nombreM, extensionM);
+                                contenidoM = arch_buscado.getContenido();
+                            } 
+                            catch (Exception ex) {
+                                System.out.println("No existe un archivo con ese nombre en la ruta actual");
+                                break;
+                            }                    
+                            
+                            final JFrame frame = new JFrame(archivoM);
+                            JTextArea ta = new JTextArea(10, 20);
+                            JScrollPane sp = new JScrollPane(ta);
+                            frame.setLayout(new FlowLayout());
+                            frame.setSize(300, 220);
+                            frame.getContentPane().add(sp);
+                            ta.setText(contenidoM);
+                            frame.setVisible(true);
+                            
+                            System.out.print("Ingrese OK cuando haya terminado de editar... ");
+                            String ok = br.readLine();
+                            if(ok.equals("OK")){
+                                String nuevoContenido = ta.getText();
+                                if (nuevoContenido.length() <= disco_virtual.getTamSectores()*disco_virtual.cantSectoresVacios()){
+                                    arch_buscado.borrarContenido();
+                                    arch_buscado.setPunteros(disco_virtual.escribirSectores(nuevoContenido, arch_buscado.getPunteros()));
+                                }
+                                else{
+                                    System.out.print("No hay suficiente espacio para almacenar el contenido nuevo");
+                                }
+                                frame.setVisible(false);
+                            }
+                            
                             break;
                             
                             
@@ -203,8 +242,8 @@ public class Proyecto3_SO {
                             String extension = temp_extension[(temp_extension.length)-1];
                             String nombre = archivoV.substring(0, archivoV.lastIndexOf("." + extension));
                             try {
-                                Archivo arch_buscado = dir_actual.getArchivo(nombre, extension);
-                                System.out.println(arch_buscado.getContenido());
+                                Archivo arch_buscadoV = dir_actual.getArchivo(nombre, extension);
+                                System.out.println(arch_buscadoV.getContenido());
                             } 
                             catch (Exception ex) {
                                 System.out.println("No existe un archivo con ese nombre en la ruta actual");
