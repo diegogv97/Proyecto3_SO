@@ -173,7 +173,7 @@ public class DiscoVirtual {
 			while(sectorLeido < cantSectores){
 				if(sectorLeido < sector){
 					cont_anterior += "<----- Sector " + sectorLeido + " ----->\n";
-					String conteAux = getSector(sectorLeido);
+                                        String conteAux = getSector(sectorLeido);
 					cont_anterior += conteAux;
 					if(!conteAux.isEmpty()){
 						cont_anterior += "\n";
@@ -188,7 +188,10 @@ public class DiscoVirtual {
 				}
 				sectorLeido++;
 			}
-			contenidoSector = "<----- Sector " + sector + " ----->\n" + contenidoSector + "\n";
+                        if(!contenidoSector.isEmpty())
+                            contenidoSector = "<----- Sector " + sector + " ----->\n" + contenidoSector + "\n";
+                        else
+                            contenidoSector = "<----- Sector " + sector + " ----->\n" + contenidoSector;
 			String[] contenido = (cont_anterior + contenidoSector + cont_posterior).split("\n");
 			archivo = new File(nomArchivo);
 			if(escribirArchivo(contenido)){
@@ -231,5 +234,17 @@ public class DiscoVirtual {
 		}
 		return -1;
 	}
-
+        
+        // Devuelve la cantidad de sectores vacios
+	public int cantSectoresVacios(){
+            int cantVacios = 0;
+            for(int sectorActual = 0; sectorActual < cantSectores; sectorActual++){
+                String contenidoSector = getSector(sectorActual);
+                if(contenidoSector.isEmpty()){
+                    cantVacios++;
+                }
+            }
+            return cantVacios;
+	}
+         
 }

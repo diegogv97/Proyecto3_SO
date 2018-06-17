@@ -38,21 +38,13 @@ public class Directorio {
                 return d;
             }
         }
-        throw new Exception("DIrectorio no existe");
-    }
-    
-    public Archivo getArchivo(String nombre, String extension){
-        for(Archivo a : archivos){
-            if (a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
-                return a;
-            }
-        }
-        return null;
+        throw new Exception("Directorio no existe");
     }
     
     public ArrayList<Directorio> getListaDirectorios(){
         return directorios; 
     }
+    
     public ArrayList<Archivo> getListaArchivos(){
         return archivos; 
     }
@@ -105,6 +97,7 @@ public class Directorio {
         }
     }
     
+
     public boolean existeArchivoRuta(String[] ruta){
     	if(ruta.length == 1){
     		String[] nomArchivo = ruta[0].split("\\.");
@@ -175,5 +168,25 @@ public class Directorio {
     		}
     	}
     	return null;
+    }
+  
+    public Archivo getArchivo(String nombre, String extension) throws Exception{
+        for(Archivo a : archivos){
+            if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
+                return a;
+            }
+        }
+        throw new Exception("Archivo no existe");
+    }
+    
+    public void borrarArchivo(String nombre, String extension){
+        for(Archivo a : archivos){
+            if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
+                a.borrarContenido();
+                archivos.remove(a);
+                break;
+            }
+        }
+
     }
 }
