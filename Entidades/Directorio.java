@@ -37,7 +37,7 @@ public class Directorio {
                 return d;
             }
         }
-        throw new Exception("DIrectorio no existe");
+        throw new Exception("Directorio no existe");
     }
     
     public ArrayList<Directorio> getListaDirectorios(){
@@ -103,5 +103,15 @@ public class Directorio {
             }
         }
         throw new Exception("Archivo no existe");
+    }
+    
+    public void borrarArchivo(String nombre, String extension){
+        for(Archivo a : archivos){
+            if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
+                a.borrarContenido();
+                archivos.remove(a);
+                break;
+            }
+        }
     }
 }

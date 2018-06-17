@@ -276,6 +276,34 @@ public class Proyecto3_SO {
                             break;
                             
                         case "REM":
+                            if (contarParametros(tokens, 1) == true){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                            String remover = input.substring("REM ".length());
+                            System.out.println("intentado eliminar " + remover);
+                            
+                            String[] posible_extension = remover.split("\\.");
+                            
+                            if(posible_extension.length == 1){
+                                //es directorio
+                            }
+                            else{
+                                String ext = posible_extension[(posible_extension.length) -1];
+                                String name = remover.substring(0, remover.lastIndexOf("." + ext));
+                                if(dir_actual.existeArchivo(name, ext)){
+                                    dir_actual.borrarArchivo(name, ext);
+                                }
+                                else if(dir_actual.existeDirectorio(remover)){
+                                    //es directorio
+                                }
+                                else{
+                                    System.out.println("archivo o directorio no existe en el directorio actual");
+                                }
+                            }
+                            
+                            
+                            
                             break;
                         case "TREE":
                             Directorio raiz = disco_virtual.getRaiz();
@@ -330,7 +358,7 @@ public class Proyecto3_SO {
         tabs++;
         for(Archivo a: dir.getListaArchivos()){
             imprimirTabs(tabs);
-            System.out.println("- Archivo: "+ a.getNombre());
+            System.out.println("- Archivo: "+ a.getNombre() + "." + a.getExtension());
         }
         for(Directorio d: dir.getListaDirectorios()){
             imprimirTabs(tabs);
