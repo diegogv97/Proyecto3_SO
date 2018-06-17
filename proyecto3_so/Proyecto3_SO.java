@@ -8,6 +8,8 @@ import Entidades.Archivo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream.GetField;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +68,7 @@ public class Proyecto3_SO {
                                 break;
                             }
                             Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
-                            if(dir_actual.existeArchivo(archivoNuevo.getNombre())){
+                            if(dir_actual.existeArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension())){
                             	System.out.println("El nombre de archivo ya existe");
                             	break;
                             }
@@ -205,21 +207,73 @@ public class Proyecto3_SO {
                             break;
                             
                         case "CPY":
-                            System.out.print("Indique opcion 10, 11 o 12: ");
+                        	if(!(tokens.length == 3)){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                        	
+                        	Directorio raizTemp = disco_virtual.getRaiz();
+                        	Archivo archivo1, archivo2;
+                        	
+                        	String[] ruta1 = tokens[1].split("/");
+                        	String nomRaiz1 = ruta1[0];
+                        	ruta1 = Arrays.copyOfRange(ruta1, 1, ruta1.length);
+                        	
+                        	if(raizTemp.getNombre().equals(nomRaiz1)){// && raizTemp.existeArchivoRuta(ruta1)){
+                        		//Archivo de ruta virtual
+                        		//archivo1 = getArchivoRuta(raizTemp, ruta1);
+                        		archivo1 = raizTemp.getArchivoRuta(ruta1);
+                        	}else{
+                        		//Archivo de ruta real
+                        	}
+                        	
+                        	String[] ruta2 = tokens[2].split("/");
+                        	String nomRaiz2 = ruta2[0];
+                        	ruta2 = Arrays.copyOfRange(ruta2, 1, ruta2.length);
+                        	
+                        	Directorio destino = null;
+                        	if(raizTemp.getNombre().equals(nomRaiz2)){
+                        		//Directorio de ruta virtual
+                        		destino = raizTemp.getDirectorioRuta(ruta2);
+                        		/*
+                        		 * 
+                        		 * 
+                        		 * TENGO QUE PONER QUE CREE EL ARCHIVO AQUI
+                        		 * 
+                        		 * TAMBIEN FALTA QUE SOBREESCRIBA SI YA EXISTE
+                        		 * 
+                        		 */
+                        		
+                        	}else{
+                        		//Archivo de ruta real
+                        	}
+                        	/*
+                        	String[] ruta2 = tokens[2].split("/");
+                        	String nomRaiz2 = ruta2[0];
+                        	ruta2 = Arrays.copyOfRange(ruta2, 1, ruta2.length-1);
+                        	
+                        	if(raizTemp.getNombre().equals(nomRaiz2) && raizTemp.existeArchivoRuta(ruta2)){
+                        		//Archivo de ruta virtual
+                        		archivo2 = getArchivoRuta(raizTemp, ruta2);
+                        	}else{
+                        		//Archivo de ruta real
+                        	}
+                        	*/
+                            /*System.out.print("Indique opcion 10, 11 o 12: ");
                             int opcion = Integer.parseInt(br.readLine());
                             switch(opcion){
                                 case 10:
-                                    System.out.println("un archivo con ruta virtual sera copiado a una ruta â€œvirtualâ€� de MI File System. ");
+                                    System.out.println("un archivo con ruta real sera copiado a una ruta virtual de MI File System. ");
                                     break;
                                 case 11:
-                                    System.out.println("un archivo con ruta virtual de MI File System serÃ¡ copiado a una ruta â€œreal");
+                                    System.out.println("un archivo con ruta virtual de MI File System sera copiado a una ruta real");
                                     break;
                                 case 12:
-                                    System.out.println("un archivo con ruta virtual de MI File System serÃ¡ copiado a otra ruta â€œvirtualâ€� de MI File System. ");
+                                    System.out.println("un archivo con ruta virtual de MI File System sera copiado a otra ruta virtual de MI File System. ");
                                     break;
                                 default:
                                     System.out.println("opcion no valida.");
-                            }
+                            }*/
                             break;
                             
                             
@@ -291,7 +345,6 @@ public class Proyecto3_SO {
         
     }
     
-    
     static void imprimirTabs(int tabs){
         //System.out.println("");
         for(int i=0;i<tabs;i++){
@@ -306,4 +359,23 @@ public class Proyecto3_SO {
         return (contador == cantParametros);
     }
     
+    /*private static Archivo getArchivoRuta(Directorio raizTemp, String[] ruta){
+    	Archivo archivo = null;
+    	Directorio dir_actual_Aux = raizTemp;
+		boolean isDir = true;
+		for(int indice = 0; indice < ruta.length-1; indice++){
+			try{
+				dir_actual_Aux = dir_actual_Aux.getDirectorio(ruta[indice]);
+			}catch (Exception e){
+				System.out.println("Ruta de archivo inexistente");
+				isDir = false;
+			}
+		}
+		
+		if(isDir){//Si la ruta de salida ingresada existe
+			String[] nomArchivo = ruta[ruta.length-1].split("\\.");
+			archivo = dir_actual_Aux.getArchivo(nomArchivo[0], nomArchivo[1]);
+		}
+    	return archivo;
+    }*/
 }
