@@ -87,7 +87,12 @@ public class Archivo {
     	return true;
     }
     
-
+    public void borrarContenido(){
+        DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
+        for(int puntero : punteros){
+            discoVirtual.escribirSector("", puntero);
+        }
+    }
     
     public String getContenido(){
         String retorno = "";
