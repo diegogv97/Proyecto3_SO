@@ -23,6 +23,7 @@ public class Proyecto3_SO {
         Directorio dir_actual = null;
         String prueba = "12345";
         System.out.println(20%10);
+        Directorio raiz = disco_virtual.getRaiz();
         
         String dirRaiz = "";
 
@@ -224,12 +225,34 @@ public class Proyecto3_SO {
                             
                             
                         case "MOV":
+                            if (contarParametros(tokens, 2+1) == false){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                            String nom_arch = tokens[1];
+                            String dir_mover = tokens[2];
+                          
+                            
+                            for(Archivo a:dir_actual.getListaArchivos()){
+                                if(nom_arch.equals(a.getNombre())){
+                                    if(buscarDir(a, raiz)){
+                                        dir_actual.getListaArchivos().remove(a);
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                            
+                            
+                            
+                            
+                            
                             break;
                             
                         case "REM":
                             break;
                         case "TREE":
-                            Directorio raiz = disco_virtual.getRaiz();
+                            
                             
                             System.out.println(raiz.getNombre());
                             recorrer(raiz,0); 
@@ -291,6 +314,19 @@ public class Proyecto3_SO {
         
     }
     
+    static boolean buscarDir(Archivo arch, Directorio dir){
+        
+        for(Directorio d: dir.getListaDirectorios()){
+            if (dir.getNombre().equals(d.getNombre())){
+                d.addArchivo(arch);
+                System.out.println("Archivo agregado");
+                return true;
+            }
+            buscarDir(arch,d);
+        }
+        return false; 
+        
+    }
     
     static void imprimirTabs(int tabs){
         //System.out.println("");
