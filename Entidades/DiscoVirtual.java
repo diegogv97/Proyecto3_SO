@@ -188,7 +188,10 @@ public class DiscoVirtual {
 				}
 				sectorLeido++;
 			}
-			contenidoSector = "<----- Sector " + sector + " ----->\n" + contenidoSector + "\n";
+                        if(!contenidoSector.isEmpty())
+                            contenidoSector = "<----- Sector " + sector + " ----->\n" + contenidoSector + "\n";
+                        else
+                            contenidoSector = "<----- Sector " + sector + " ----->\n" + contenidoSector;
 			String[] contenido = (cont_anterior + contenidoSector + cont_posterior).split("\n");
 			archivo = new File(nomArchivo);
 			if(escribirArchivo(contenido)){
