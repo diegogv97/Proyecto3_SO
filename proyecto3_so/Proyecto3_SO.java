@@ -21,8 +21,6 @@ public class Proyecto3_SO {
         String input = "";
         DiscoVirtual disco_virtual = null;
         Directorio dir_actual = null;
-        String prueba = "12345";
-        System.out.println(20%10);
         
         String dirRaiz = "";
 
@@ -66,7 +64,8 @@ public class Proyecto3_SO {
                                 break;
                             }
                             Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
-                            if(dir_actual.existeArchivo(archivoNuevo.getNombre())){
+                            
+                            if(dir_actual.existeArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension())){
                             	System.out.println("El nombre de archivo ya existe");
                             	break;
                             }
@@ -199,9 +198,20 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String archivoV = input.substring("MFLE ".length());
-                            System.out.println("accediendo al contenido de " + archivoV);
+                            String archivoV = input.substring("VIEW ".length());
+                            String[] temp_extension = archivoV.split("\\.");
+                            String extension = temp_extension[(temp_extension.length)-1];
+                            String nombre = archivoV.substring(0, archivoV.lastIndexOf("." + extension));
+                            try {
+                                Archivo arch_buscado = dir_actual.getArchivo(nombre, extension);
+                                System.out.println(arch_buscado.getContenido());
+                            } 
+                            catch (Exception ex) {
+                                System.out.println("No existe un archivo con ese nombre en la ruta actual");
+                            }
+                    
                             
+
                             break;
                             
                         case "CPY":
