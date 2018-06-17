@@ -130,6 +130,9 @@ public class DiscoVirtual {
 		int caracteresSector = tamSectores / 2;
 		
 		int secArchivo = contenidoTotal.length() / caracteresSector;
+                if((contenidoTotal.length() % caracteresSector)!= 0){
+                    secArchivo++;
+                }
 		
 		int nSectores[] = new int[secArchivo];
 		for (int contSec = 0; contSec < secArchivo; contSec++){
@@ -141,11 +144,10 @@ public class DiscoVirtual {
 			String subStringSector = "";
 			
 			if(contSec == (secArchivo - 1)){
-				subStringSector = contenidoTotal.substring(contSec * caracteresSector, contenidoTotal.length());
+				subStringSector = contenidoTotal.substring(contSec * caracteresSector, contenidoTotal.length());             
 			}else{
 				subStringSector = contenidoTotal.substring(contSec * caracteresSector, ((contSec + 1) * caracteresSector));
 			}
-			
 			nSectores[contSec] = escribirSector(subStringSector, numSec);
 		}
 		
