@@ -127,7 +127,11 @@ public class Directorio {
     	if(ruta.length == 1){
     		String[] nomArchivo = ruta[0].split("\\.");
     		if(existeArchivo(nomArchivo[0], nomArchivo[1])){
-    			return getArchivo(nomArchivo[0], nomArchivo[1]);
+    			try {
+					return getArchivo(nomArchivo[0], nomArchivo[1]);
+				} catch (Exception e) {
+					return null;
+				}
     		}
     	}else{
     		if(existeDirectorio(ruta[0])){
