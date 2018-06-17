@@ -64,7 +64,8 @@ public class Archivo {
         
         // Si el archivo necesitaba mayor cantidad de sectores de los que estan disponibles en el disco virtual,
         // limpia los sectores que le asigno al archivo e indica que no se pudo guardar
-        if(punteros.length > discoVirtual.getCantSectores()){
+        //if(punteros.length > discoVirtual.getCantSectores()){
+        if(sectoresInsuficientes()){
         	System.out.println("No hay suficiente espacio para crear el archivo");
         	for(int ind = 0; ind < punteros.length; ind++){
         		if(punteros[ind] == -1 ){
@@ -76,6 +77,15 @@ public class Archivo {
         }
         
     	return true;
+    }
+    
+    private boolean sectoresInsuficientes(){
+    	for(int i = 0; i < punteros.length; i++){
+    		if(punteros[i] == -1){
+    			return true;
+    		}
+    	}
+    	return false;
     }
     
 }
