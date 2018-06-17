@@ -56,6 +56,14 @@ public class Archivo {
     public void setSize(int size) {
         this.size = size;
     }
+
+    public int[] getPunteros() {
+        return punteros;
+    }
+
+    public void setPunteros(int[] punteros) {
+        this.punteros = punteros;
+    }
     
     public boolean escribirArchivo(String contenido){
     	DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
@@ -76,6 +84,17 @@ public class Archivo {
         }
         
     	return true;
+    }
+    
+    
+    public String getContenido(){
+        String retorno = "";
+        for (int i = 0; i < punteros.length; i++){
+            retorno = retorno + (DiscoVirtual.getInstance(0, 0, "").getSector(punteros[i]));
+        }
+        System.out.println();
+        
+        return retorno;      
     }
     
 }

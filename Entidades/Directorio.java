@@ -39,9 +39,11 @@ public class Directorio {
         }
         throw new Exception("DIrectorio no existe");
     }
+    
     public ArrayList<Directorio> getListaDirectorios(){
         return directorios; 
     }
+    
     public ArrayList<Archivo> getListaArchivos(){
         return archivos; 
     }
@@ -54,9 +56,9 @@ public class Directorio {
         return false;
     }
     
-    public boolean existeArchivo(String nombre){
+    public boolean existeArchivo(String nombre, String extension){
         for (Archivo a: archivos){
-            if (a.getNombre().equals(nombre))
+            if (a.getNombre().equals(nombre) && a.getExtension().equals(extension))
                 return true;
         }
         return false;
@@ -94,4 +96,12 @@ public class Directorio {
         }
     }
     
+    public Archivo getArchivo(String nombre, String extension) throws Exception{
+        for(Archivo a : archivos){
+            if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
+                return a;
+            }
+        }
+        throw new Exception("Archivo no existe");
+    }
 }
