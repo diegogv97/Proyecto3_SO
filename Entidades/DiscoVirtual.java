@@ -130,9 +130,9 @@ public class DiscoVirtual {
 		int caracteresSector = tamSectores / 2;
 		
 		int secArchivo = contenidoTotal.length() / caracteresSector;
-                if((contenidoTotal.length() % caracteresSector)!= 0){
-                    secArchivo++;
-                }
+		if((contenidoTotal.length() % caracteresSector)!= 0){
+			secArchivo++;
+		}
 		
 		int nSectores[] = new int[secArchivo];
 		for (int contSec = 0; contSec < secArchivo; contSec++){

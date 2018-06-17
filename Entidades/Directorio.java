@@ -2,6 +2,7 @@
 package Entidades;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,6 +97,79 @@ public class Directorio {
         }
     }
     
+
+    public boolean existeArchivoRuta(String[] ruta){
+    	if(ruta.length == 1){
+    		String[] nomArchivo = ruta[0].split("\\.");
+    		if(existeArchivo(nomArchivo[0], nomArchivo[1])){
+    			return true;
+    		}
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.existeArchivoRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return false;
+    			}
+    			
+    		}
+    	}
+    	return false;
+    }
+    
+    public Archivo getArchivoRuta(String[] ruta){
+    	if(ruta.length == 1){
+    		String[] nomArchivo = ruta[0].split("\\.");
+    		if(existeArchivo(nomArchivo[0], nomArchivo[1])){
+    			return getArchivo(nomArchivo[0], nomArchivo[1]);
+    		}
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.getArchivoRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return null;
+    			}
+    			
+    		}
+    	}
+    	return null;
+    }
+    
+    public Directorio getDirectorioRuta(String[] ruta){
+    	if(ruta.length == 0){
+    		return this;
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.getDirectorioRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return null;
+    			}
+    			
+    		}
+    	}
+    	return null;
+    }
+  
     public Archivo getArchivo(String nombre, String extension) throws Exception{
         for(Archivo a : archivos){
             if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
@@ -113,5 +187,6 @@ public class Directorio {
                 break;
             }
         }
+
     }
 }
