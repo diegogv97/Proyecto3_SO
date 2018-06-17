@@ -21,7 +21,9 @@ public class Proyecto3_SO {
         String input = "";
         DiscoVirtual disco_virtual = null;
         Directorio dir_actual = null;
-
+        String prueba = "12345";
+        System.out.println(20%10);
+        
         String dirRaiz = "";
 
 
@@ -39,6 +41,7 @@ public class Proyecto3_SO {
                     String[] tokens = input.split(" ");
                     String comando = tokens[0];
                     switch (comando){
+                        //CRT [# segmentos] [size segmento] [nombre]
                         case "CRT": 
                             if (contarParametros(tokens, 3+1) == false){
                                 System.out.println("Parametros incorrectos");
@@ -56,7 +59,7 @@ public class Proyecto3_SO {
                             
                             dir_actual = disco_virtual.getRaiz();
                             break;
-                            
+                        //FLE [nombre] [extencion]
                         case "FLE":
                             if (contarParametros(tokens, 2+1) == false){
                                 System.out.println("Parametros incorrectos");
@@ -84,7 +87,7 @@ public class Proyecto3_SO {
                             }
                             
                             break;
-                            
+                        //MKDIR [nombre]   
                         case "MKDIR":
                             if (contarParametros(tokens, 1) == true){
                                 System.out.println("Parametros incorrectos");
