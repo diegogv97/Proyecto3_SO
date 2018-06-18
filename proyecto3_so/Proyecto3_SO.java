@@ -93,25 +93,7 @@ public class Proyecto3_SO {
                              }
                             contenido = contenido.substring(1);
                             if(reemplazar){
-                                int caracteresSector = (disco_virtual.getTamSectores() /2);
-                                int secArchivo = contenido.length() / caracteresSector;
-                                if((contenido.length() % caracteresSector)!= 0){
-                                        secArchivo++;
-                                }
-                                int cantActuales = 0;
-                                try {
-                                    cantActuales = dir_actual.getArchivo(tokens[1], tokens[2]).getPunteros().length;
-                                } catch (Exception ex) {}
-                                System.out.println(cantActuales);
-                                if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
-                                    dir_actual.borrarArchivo(tokens[1], tokens[2]);
-                                    if(archivoNuevo.escribirArchivo(contenido)){ 
-                                        dir_actual.addArchivo(archivoNuevo);
-                                    }
-                                }
-                                else{
-                                    System.out.println("Espacio insuficiente");
-                                }
+                                dir_actual.reemplazarArchivo(contenido, archivoNuevo);
                                
                             }
                             else{
@@ -264,16 +246,24 @@ public class Proyecto3_SO {
                             }
                             
                             String nom_archivo = input.substring("PPT ".length());
-                            for (Archivo a: dir_actual.getListaArchivos()){
-                                if(nom_archivo.equals(a.getNombre())){
-                                    System.out.println("Extension: "+a.getExtension());
-                                    System.out.println("Fecha creacion: "+a.getFecha_creacion());
-                                    System.out.println("Fecha modificacion: "+a.getFecha_modificacion());
-                                    System.out.println("Tamaño: "+a.getSize());
-                                    isFile = true;
-                                    break;
+                            
+                            String[] posible_extensionPPT = nom_archivo.split("\\.");
+                            
+                            if(posible_extensionPPT.length >= 2){
+                                String ext = posible_extensionPPT[(posible_extensionPPT.length) -1];
+                                String name = nom_archivo.substring(0, nom_archivo.lastIndexOf("." + ext));
+                                for (Archivo a: dir_actual.getListaArchivos()){
+                                    if(name.equals(a.getNombre()) && ext.equals(a.getExtension())){
+                                        System.out.println("Extension: "+a.getExtension());
+                                        System.out.println("Fecha creacion: "+a.getFecha_creacion());
+                                        System.out.println("Fecha modificacion: "+a.getFecha_modificacion());
+                                        System.out.println("Tamaño: "+a.getSize());
+                                        isFile = true;
+                                        break;
+                                    }
                                 }
                             }
+                            
                             if(!isFile)
                                 System.out.println("Archivo no existe en el directorio "+dir_actual.getNombre());
                             break;
