@@ -69,6 +69,7 @@ public class Archivo {
     	DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
         punteros = discoVirtual.escribirSectores(contenido, punteros);
         System.out.println(punteros.length);
+        size = contenido.length() * 2;
         
         // Si el archivo necesitaba mayor cantidad de sectores de los que estan disponibles en el disco virtual,
         // limpia los sectores que le asigno al archivo e indica que no se pudo guardar
@@ -81,6 +82,7 @@ public class Archivo {
         		}
         		discoVirtual.escribirSector("", punteros[ind]);
         	}
+        	size = 0;
         	return false;
         }
         
@@ -92,6 +94,7 @@ public class Archivo {
         for(int puntero : punteros){
             discoVirtual.escribirSector("", puntero);
         }
+        size = 0;
     }
     
     public String getContenido(){
