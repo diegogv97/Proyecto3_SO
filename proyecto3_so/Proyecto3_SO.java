@@ -27,7 +27,7 @@ public class Proyecto3_SO {
 
         
         String dirRaiz = "";
-        Directorio raiz = disco_virtual.getRaiz();
+        Directorio raiz = null; 
 
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
@@ -60,6 +60,7 @@ public class Proyecto3_SO {
                             //int l[] = disco_virtual.escribirSectores("HOLA", new int[0]);
                             
                             dir_actual = disco_virtual.getRaiz();
+                            raiz = disco_virtual.getRaiz();
                             break;
                         //FLE [nombre] [extencion]
                         case "FLE":
