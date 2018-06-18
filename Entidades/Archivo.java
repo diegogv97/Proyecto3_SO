@@ -56,6 +56,14 @@ public class Archivo {
     public void setSize(int size) {
         this.size = size;
     }
+
+    public int[] getPunteros() {
+        return punteros;
+    }
+
+    public void setPunteros(int[] punteros) {
+        this.punteros = punteros;
+    }
     
     public boolean escribirArchivo(String contenido){
     	DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
@@ -64,7 +72,8 @@ public class Archivo {
         
         // Si el archivo necesitaba mayor cantidad de sectores de los que estan disponibles en el disco virtual,
         // limpia los sectores que le asigno al archivo e indica que no se pudo guardar
-        if(punteros.length > discoVirtual.getCantSectores()){
+        //if(punteros.length > discoVirtual.getCantSectores()){
+        if(sectoresInsuficientes()){
         	System.out.println("No hay suficiente espacio para crear el archivo");
         	for(int ind = 0; ind < punteros.length; ind++){
         		if(punteros[ind] == -1 ){
@@ -76,6 +85,31 @@ public class Archivo {
         }
         
     	return true;
+    }
+    
+    public void borrarContenido(){
+        DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
+        for(int puntero : punteros){
+            discoVirtual.escribirSector("", puntero);
+        }
+    }
+    
+    public String getContenido(){
+        String retorno = "";
+        for (int i = 0; i < punteros.length; i++){
+            retorno = retorno + (DiscoVirtual.getInstance(0, 0, "").getSector(punteros[i]));
+        }
+        System.out.println();
+        
+        return retorno;      
+    }
+    private boolean sectoresInsuficientes(){
+    	for(int i = 0; i < punteros.length; i++){
+    		if(punteros[i] == -1){
+    			return true;
+    		}
+    	}
+    	return false;
     }
     
 }

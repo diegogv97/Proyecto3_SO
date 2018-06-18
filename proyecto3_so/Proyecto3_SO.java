@@ -8,11 +8,14 @@ import Entidades.Archivo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream.GetField;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+import javax.swing.*;
+import java.awt.*;
 
 
 public class Proyecto3_SO {
@@ -21,12 +24,10 @@ public class Proyecto3_SO {
         String input = "";
         DiscoVirtual disco_virtual = null;
         Directorio dir_actual = null;
-        String prueba = "12345";
-        System.out.println(20%10);
-        Directorio raiz = disco_virtual.getRaiz();
+
         
         String dirRaiz = "";
-
+        Directorio raiz = disco_virtual.getRaiz();
 
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
@@ -67,12 +68,12 @@ public class Proyecto3_SO {
                                 break;
                             }
                             Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
-                            if(dir_actual.existeArchivo(archivoNuevo.getNombre())){
+                            if(dir_actual.existeArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension())){
                             	System.out.println("El nombre de archivo ya existe");
                             	break;
                             }
                             
-                            System.out.print("Ingrese el contenido del archivo (Ctrl+c para finalizar):\n");
+                            System.out.print("Ingrese el contenido del archivo. Escriba EOF en la ultima linea para terminar:\n");
                             //input = br.readLine();
                             String aux = "";
                             String contenido = "";
@@ -168,8 +169,46 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String archivo = input.substring("MFLE ".length());
-                            System.out.println("accediendo al contenido de " + archivo);
+                            String archivoM = input.substring("MFLE ".length());
+                            System.out.println("accediendo al contenido de " + archivoM);
+                           
+                            String[] temp_extensionM = archivoM.split("\\.");
+                            String extensionM = temp_extensionM[(temp_extensionM.length)-1];
+                            String nombreM = archivoM.substring(0, archivoM.lastIndexOf("." + extensionM));
+                            String contenidoM = "";
+                            Archivo arch_buscado = null;
+                            try {
+                                arch_buscado = dir_actual.getArchivo(nombreM, extensionM);
+                                contenidoM = arch_buscado.getContenido();
+                            } 
+                            catch (Exception ex) {
+                                System.out.println("No existe un archivo con ese nombre en la ruta actual");
+                                break;
+                            }                    
+                            
+                            final JFrame frame = new JFrame(archivoM);
+                            JTextArea ta = new JTextArea(10, 20);
+                            JScrollPane sp = new JScrollPane(ta);
+                            frame.setLayout(new FlowLayout());
+                            frame.setSize(300, 220);
+                            frame.getContentPane().add(sp);
+                            ta.setText(contenidoM);
+                            frame.setVisible(true);
+                            
+                            System.out.print("Ingrese OK cuando haya terminado de editar... ");
+                            String ok = br.readLine();
+                            if(ok.equals("OK")){
+                                String nuevoContenido = ta.getText();
+                                if (nuevoContenido.length() <= disco_virtual.getTamSectores()*disco_virtual.cantSectoresVacios()){
+                                    arch_buscado.borrarContenido();
+                                    arch_buscado.setPunteros(disco_virtual.escribirSectores(nuevoContenido, arch_buscado.getPunteros()));
+                                }
+                                else{
+                                    System.out.print("No hay suficiente espacio para almacenar el contenido nuevo");
+                                }
+                                frame.setVisible(false);
+                            }
+                            
                             break;
                             
                             
@@ -200,27 +239,90 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String archivoV = input.substring("MFLE ".length());
-                            System.out.println("accediendo al contenido de " + archivoV);
+                            String archivoV = input.substring("VIEW ".length());
+                            String[] temp_extension = archivoV.split("\\.");
+                            String extension = temp_extension[(temp_extension.length)-1];
+                            String nombre = archivoV.substring(0, archivoV.lastIndexOf("." + extension));
+                            try {
+                                Archivo arch_buscadoV = dir_actual.getArchivo(nombre, extension);
+                                System.out.println(arch_buscadoV.getContenido());
+                            } 
+                            catch (Exception ex) {
+                                System.out.println("No existe un archivo con ese nombre en la ruta actual");
+                            }
+                    
                             
+
                             break;
                             
                         case "CPY":
-                            System.out.print("Indique opcion 10, 11 o 12: ");
+                        	if(!(tokens.length == 3)){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                        	
+                        	Directorio raizTemp = disco_virtual.getRaiz();
+                        	Archivo archivo1, archivo2;
+                        	
+                        	String[] ruta1 = tokens[1].split("/");
+                        	String nomRaiz1 = ruta1[0];
+                        	ruta1 = Arrays.copyOfRange(ruta1, 1, ruta1.length);
+                        	
+                        	if(raizTemp.getNombre().equals(nomRaiz1)){// && raizTemp.existeArchivoRuta(ruta1)){
+                        		//Archivo de ruta virtual
+                        		//archivo1 = getArchivoRuta(raizTemp, ruta1);
+                        		archivo1 = raizTemp.getArchivoRuta(ruta1);
+                        	}else{
+                        		//Archivo de ruta real
+                        	}
+                        	
+                        	String[] ruta2 = tokens[2].split("/");
+                        	String nomRaiz2 = ruta2[0];
+                        	ruta2 = Arrays.copyOfRange(ruta2, 1, ruta2.length);
+                        	
+                        	Directorio destino = null;
+                        	if(raizTemp.getNombre().equals(nomRaiz2)){
+                        		//Directorio de ruta virtual
+                        		destino = raizTemp.getDirectorioRuta(ruta2);
+                        		/*
+                        		 * 
+                        		 * 
+                        		 * TENGO QUE PONER QUE CREE EL ARCHIVO AQUI
+                        		 * 
+                        		 * TAMBIEN FALTA QUE SOBREESCRIBA SI YA EXISTE
+                        		 * 
+                        		 */
+                        		
+                        	}else{
+                        		//Archivo de ruta real
+                        	}
+                        	/*
+                        	String[] ruta2 = tokens[2].split("/");
+                        	String nomRaiz2 = ruta2[0];
+                        	ruta2 = Arrays.copyOfRange(ruta2, 1, ruta2.length-1);
+                        	
+                        	if(raizTemp.getNombre().equals(nomRaiz2) && raizTemp.existeArchivoRuta(ruta2)){
+                        		//Archivo de ruta virtual
+                        		archivo2 = getArchivoRuta(raizTemp, ruta2);
+                        	}else{
+                        		//Archivo de ruta real
+                        	}
+                        	*/
+                            /*System.out.print("Indique opcion 10, 11 o 12: ");
                             int opcion = Integer.parseInt(br.readLine());
                             switch(opcion){
                                 case 10:
-                                    System.out.println("un archivo con ruta virtual sera copiado a una ruta â€œvirtualâ€� de MI File System. ");
+                                    System.out.println("un archivo con ruta real sera copiado a una ruta virtual de MI File System. ");
                                     break;
                                 case 11:
-                                    System.out.println("un archivo con ruta virtual de MI File System serÃ¡ copiado a una ruta â€œreal");
+                                    System.out.println("un archivo con ruta virtual de MI File System sera copiado a una ruta real");
                                     break;
                                 case 12:
-                                    System.out.println("un archivo con ruta virtual de MI File System serÃ¡ copiado a otra ruta â€œvirtualâ€� de MI File System. ");
+                                    System.out.println("un archivo con ruta virtual de MI File System sera copiado a otra ruta virtual de MI File System. ");
                                     break;
                                 default:
                                     System.out.println("opcion no valida.");
-                            }
+                            }*/
                             break;
                             
                             
@@ -250,6 +352,34 @@ public class Proyecto3_SO {
                             break;
                             
                         case "REM":
+                            if (contarParametros(tokens, 1) == true){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                            String remover = input.substring("REM ".length());
+                            System.out.println("intentado eliminar " + remover);
+                            
+                            String[] posible_extension = remover.split("\\.");
+                            
+                            if(posible_extension.length == 1){
+                                //es directorio
+                            }
+                            else{
+                                String ext = posible_extension[(posible_extension.length) -1];
+                                String name = remover.substring(0, remover.lastIndexOf("." + ext));
+                                if(dir_actual.existeArchivo(name, ext)){
+                                    dir_actual.borrarArchivo(name, ext);
+                                }
+                                else if(dir_actual.existeDirectorio(remover)){
+                                    //es directorio
+                                }
+                                else{
+                                    System.out.println("archivo o directorio no existe en el directorio actual");
+                                }
+                            }
+                            
+                            
+                            
                             break;
                         case "TREE":
                             
@@ -304,7 +434,7 @@ public class Proyecto3_SO {
         tabs++;
         for(Archivo a: dir.getListaArchivos()){
             imprimirTabs(tabs);
-            System.out.println("- Archivo: "+ a.getNombre());
+            System.out.println("- Archivo: "+ a.getNombre() + "." + a.getExtension());
         }
         for(Directorio d: dir.getListaDirectorios()){
             imprimirTabs(tabs);
@@ -314,20 +444,7 @@ public class Proyecto3_SO {
         
     }
     
-    static boolean buscarDir(Archivo arch, Directorio dir){
-        
-        for(Directorio d: dir.getListaDirectorios()){
-            if (dir.getNombre().equals(d.getNombre())){
-                d.addArchivo(arch);
-                System.out.println("Archivo agregado");
-                return true;
-            }
-            buscarDir(arch,d);
-        }
-        return false; 
-        
-    }
-    
+
     static void imprimirTabs(int tabs){
         //System.out.println("");
         for(int i=0;i<tabs;i++){
@@ -342,4 +459,36 @@ public class Proyecto3_SO {
         return (contador == cantParametros);
     }
     
+    /*private static Archivo getArchivoRuta(Directorio raizTemp, String[] ruta){
+    	Archivo archivo = null;
+    	Directorio dir_actual_Aux = raizTemp;
+		boolean isDir = true;
+		for(int indice = 0; indice < ruta.length-1; indice++){
+			try{
+				dir_actual_Aux = dir_actual_Aux.getDirectorio(ruta[indice]);
+			}catch (Exception e){
+				System.out.println("Ruta de archivo inexistente");
+				isDir = false;
+			}
+		}
+		
+		if(isDir){//Si la ruta de salida ingresada existe
+			String[] nomArchivo = ruta[ruta.length-1].split("\\.");
+			archivo = dir_actual_Aux.getArchivo(nomArchivo[0], nomArchivo[1]);
+		}
+    	return archivo;
+    }*/
+  static boolean buscarDir(Archivo arch, Directorio dir){
+        
+        for(Directorio d: dir.getListaDirectorios()){
+            if (dir.getNombre().equals(d.getNombre())){
+                d.addArchivo(arch);
+                System.out.println("Archivo agregado");
+                return true;
+            }
+            buscarDir(arch,d);
+        }
+        return false; 
+        
+    }
 }

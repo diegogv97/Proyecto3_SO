@@ -2,6 +2,7 @@
 package Entidades;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,11 +38,13 @@ public class Directorio {
                 return d;
             }
         }
-        throw new Exception("DIrectorio no existe");
+        throw new Exception("Directorio no existe");
     }
+    
     public ArrayList<Directorio> getListaDirectorios(){
         return directorios; 
     }
+    
     public ArrayList<Archivo> getListaArchivos(){
         return archivos; 
     }
@@ -54,9 +57,9 @@ public class Directorio {
         return false;
     }
     
-    public boolean existeArchivo(String nombre){
+    public boolean existeArchivo(String nombre, String extension){
         for (Archivo a: archivos){
-            if (a.getNombre().equals(nombre))
+            if (a.getNombre().equals(nombre) && a.getExtension().equals(extension))
                 return true;
         }
         return false;
@@ -94,4 +97,100 @@ public class Directorio {
         }
     }
     
+
+    public boolean existeArchivoRuta(String[] ruta){
+    	if(ruta.length == 1){
+    		String[] nomArchivo = ruta[0].split("\\.");
+    		if(existeArchivo(nomArchivo[0], nomArchivo[1])){
+    			return true;
+    		}
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.existeArchivoRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return false;
+    			}
+    			
+    		}
+    	}
+    	return false;
+    }
+    
+    public Archivo getArchivoRuta(String[] ruta){
+    	if(ruta.length == 1){
+    		String[] nomArchivo = ruta[0].split("\\.");
+    		if(existeArchivo(nomArchivo[0], nomArchivo[1])){
+    			try {
+					return getArchivo(nomArchivo[0], nomArchivo[1]);
+				} catch (Exception e) {
+					return null;
+				}
+    		}
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.getArchivoRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return null;
+    			}
+    			
+    		}
+    	}
+    	return null;
+    }
+    
+    public Directorio getDirectorioRuta(String[] ruta){
+    	if(ruta.length == 0){
+    		return this;
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.getDirectorioRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return null;
+    			}
+    			
+    		}
+    	}
+    	return null;
+    }
+  
+    public Archivo getArchivo(String nombre, String extension) throws Exception{
+        for(Archivo a : archivos){
+            if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
+                return a;
+            }
+        }
+        throw new Exception("Archivo no existe");
+    }
+    
+    public void borrarArchivo(String nombre, String extension){
+        for(Archivo a : archivos){
+            if(a.getNombre().equals(nombre) && a.getExtension().equals(extension)){
+                a.borrarContenido();
+                archivos.remove(a);
+                break;
+            }
+        }
+
+    }
 }
