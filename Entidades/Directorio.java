@@ -226,4 +226,29 @@ public class Directorio {
         directorios.removeAll(directorios);
         archivos.removeAll(archivos);
     }
+    
+    public boolean reemplazarArchivo(String contenido, Archivo archivoNuevo){
+        DiscoVirtual disco_virtual = DiscoVirtual.getInstance(0, 0, "");
+        int caracteresSector = (disco_virtual.getTamSectores() /2);
+        int secArchivo = contenido.length() / caracteresSector;
+        if((contenido.length() % caracteresSector)!= 0){
+                secArchivo++;
+        }
+        int cantActuales = 0;
+        try {
+            cantActuales = getArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension()).getPunteros().length;
+        } catch (Exception ex) {}
+        System.out.println(cantActuales);
+        if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
+            borrarArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension());
+            if(archivoNuevo.escribirArchivo(contenido)){ 
+                addArchivo(archivoNuevo);
+            }
+        }
+        else{
+            System.out.println("Espacio insuficiente");
+            return false;
+        }
+        return true;
+    }
 }
