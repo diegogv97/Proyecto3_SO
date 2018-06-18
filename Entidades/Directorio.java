@@ -264,7 +264,7 @@ public class Directorio {
         try {
             cantActuales = getArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension()).getPunteros().length;
         } catch (Exception ex) {}
-        System.out.println(cantActuales);
+        //System.out.println(cantActuales);
         if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
             borrarArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension());
             if(archivoNuevo.escribirArchivo(contenido)){ 
