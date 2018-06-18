@@ -4,6 +4,7 @@ package proyecto3_so;
 import Entidades.Directorio;
 import Entidades.DiscoVirtual;
 import Entidades.Archivo;
+import Entidades.ManejadorArchivos;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.*;
+
 import java.awt.*;
 
 
@@ -37,7 +39,7 @@ public class Proyecto3_SO {
                 System.out.println("               Diego Guzman");
                 System.out.println("               Josue Morales\n\n");
                 while(true){
-                    System.out.print(dirRaiz + "/:  > ");
+                    System.out.print(dirRaiz + "> ");
                     input = br.readLine();
                     String[] tokens = input.split(" ");
                     String comando = tokens[0];
@@ -261,18 +263,31 @@ public class Proyecto3_SO {
                             }
                         	
                         	Directorio raizTemp = disco_virtual.getRaiz();
-                        	Archivo archivo1, archivo2;
+                        	Archivo archivo1 = null, archivo2 = null;
                         	
                         	String[] ruta1 = tokens[1].split("/");
+                        	String rutaReal = "";
                         	String nomRaiz1 = ruta1[0];
                         	ruta1 = Arrays.copyOfRange(ruta1, 1, ruta1.length);
+                        	boolean isRuta1Real = false;
                         	
-                        	if(raizTemp.getNombre().equals(nomRaiz1)){// && raizTemp.existeArchivoRuta(ruta1)){
+                        	if(raizTemp.getNombre().equals(nomRaiz1) && raizTemp.existeArchivoRuta(ruta1)){
                         		//Archivo de ruta virtual
-                        		//archivo1 = getArchivoRuta(raizTemp, ruta1);
                         		archivo1 = raizTemp.getArchivoRuta(ruta1);
                         	}else{
                         		//Archivo de ruta real
+                        		String[] rutaAux = tokens[1].split("/");
+                        		for(int i = 0; i < rutaAux.length; i++){
+                        			rutaReal += rutaAux[i];
+                        			if(i != rutaAux.length-1){
+                        				rutaReal += "\\";
+                        			}
+                        		}
+                        		if(ManejadorArchivos.existeArchivoRuta(rutaReal)){
+                        			isRuta1Real = true;
+                        		}else{
+                        			System.out.println("Archivo base inexistente");
+                        		}
                         	}
                         	
                         	String[] ruta2 = tokens[2].split("/");
@@ -280,50 +295,51 @@ public class Proyecto3_SO {
                         	ruta2 = Arrays.copyOfRange(ruta2, 1, ruta2.length);
                         	
                         	Directorio destino = null;
-                        	if(raizTemp.getNombre().equals(nomRaiz2)){
-                        		//Directorio de ruta virtual
-                        		destino = raizTemp.getDirectorioRuta(ruta2);
-                        		/*
-                        		 * 
-                        		 * 
-                        		 * TENGO QUE PONER QUE CREE EL ARCHIVO AQUI
-                        		 * 
-                        		 * TAMBIEN FALTA QUE SOBREESCRIBA SI YA EXISTE
-                        		 * 
-                        		 */
-                        		
+                        	if(archivo1 != null){
+                        		//Copiando de ruta VIRTUAL a ruta VIRTUAL
+                        		if(raizTemp.getNombre().equals(nomRaiz2) && raizTemp.existeDirectorioRuta(ruta2)){
+                        			//Directorio de ruta virtual
+                            		archivo2 = new Archivo(archivo1.getNombre(), archivo1.getExtension(), new Date().toString(), archivo1.getSize());
+                            		//if(raizTemp.existeDirectorioRuta(ruta2)){
+                            			destino = raizTemp.getDirectorioRuta(ruta2);
+                                		if(archivo2.escribirArchivo(archivo1.getContenido())){
+                                    		destino.addArchivo(archivo2);
+                                		}
+                                		/*
+                                		 * 
+                                		 * TAMBIEN FALTA QUE SOBREESCRIBA SI YA EXISTE
+                                		 * 
+                                		 */
+                            		//}
+                        		}else{
+                        			//Copiando de ruta VIRTUAL a ruta REAL
+                        			String[] rutaAux = tokens[2].split("/");
+                            		for(int i = 0; i < rutaAux.length; i++){
+                            			rutaReal += rutaAux[i];
+                            			if(i != rutaAux.length-1){
+                            				rutaReal += "\\";
+                            			}
+                            		}
+                            		rutaReal += "\\" + archivo1.getNombre() + "." + archivo1.getExtension();
+                            		ManejadorArchivos.escribirArchivo(rutaReal, archivo1.getContenido());
+                        		}
                         	}else{
+                        		//Copiando de ruta REAL a ruta VIRTUAL
                         		//Archivo de ruta real
+                        		if(isRuta1Real){
+                        			if(raizTemp.getNombre().equals(nomRaiz2)){
+                        				String[] nombreArch = ruta1[ruta1.length-1].split("\\.");
+                            			archivo2 = new Archivo(nombreArch[0], nombreArch[1], new Date().toString(), 0);
+                            			if(raizTemp.existeDirectorioRuta(ruta2)){
+                            				destino = raizTemp.getDirectorioRuta(ruta2);
+                                			if(archivo2.escribirArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal))){
+                                				destino.addArchivo(archivo2);
+                                			}
+                            			}
+                        			}
+                        		}
                         	}
-                        	/*
-                        	String[] ruta2 = tokens[2].split("/");
-                        	String nomRaiz2 = ruta2[0];
-                        	ruta2 = Arrays.copyOfRange(ruta2, 1, ruta2.length-1);
-                        	
-                        	if(raizTemp.getNombre().equals(nomRaiz2) && raizTemp.existeArchivoRuta(ruta2)){
-                        		//Archivo de ruta virtual
-                        		archivo2 = getArchivoRuta(raizTemp, ruta2);
-                        	}else{
-                        		//Archivo de ruta real
-                        	}
-                        	*/
-                            /*System.out.print("Indique opcion 10, 11 o 12: ");
-                            int opcion = Integer.parseInt(br.readLine());
-                            switch(opcion){
-                                case 10:
-                                    System.out.println("un archivo con ruta real sera copiado a una ruta virtual de MI File System. ");
-                                    break;
-                                case 11:
-                                    System.out.println("un archivo con ruta virtual de MI File System sera copiado a una ruta real");
-                                    break;
-                                case 12:
-                                    System.out.println("un archivo con ruta virtual de MI File System sera copiado a otra ruta virtual de MI File System. ");
-                                    break;
-                                default:
-                                    System.out.println("opcion no valida.");
-                            }*/
                             break;
-                            
                             
                         case "MOV":
                             break;
@@ -434,24 +450,4 @@ public class Proyecto3_SO {
             contador++;
         return (contador == cantParametros);
     }
-    
-    /*private static Archivo getArchivoRuta(Directorio raizTemp, String[] ruta){
-    	Archivo archivo = null;
-    	Directorio dir_actual_Aux = raizTemp;
-		boolean isDir = true;
-		for(int indice = 0; indice < ruta.length-1; indice++){
-			try{
-				dir_actual_Aux = dir_actual_Aux.getDirectorio(ruta[indice]);
-			}catch (Exception e){
-				System.out.println("Ruta de archivo inexistente");
-				isDir = false;
-			}
-		}
-		
-		if(isDir){//Si la ruta de salida ingresada existe
-			String[] nomArchivo = ruta[ruta.length-1].split("\\.");
-			archivo = dir_actual_Aux.getArchivo(nomArchivo[0], nomArchivo[1]);
-		}
-    	return archivo;
-    }*/
 }
