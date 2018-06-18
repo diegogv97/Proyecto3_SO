@@ -467,13 +467,19 @@ public class Proyecto3_SO {
                             break;
                             
                         case "FIND":
-                            if (contarParametros(tokens, 1) == false){
+                            if (contarParametros(tokens, 1) == true){
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
                             
                             String nom = input.substring("FIND ".length());
                             
+                            String[] posible_extensionF = nom.split("\\.");
+                            
+                            
+                            String ext = posible_extensionF[(posible_extensionF.length) -1];
+                            String name = nom.substring(0, nom.lastIndexOf("." + ext));
+                            DiscoVirtual.printRutasTotales(name, ext, disco_virtual.getRaiz().getNombre(), disco_virtual.getRaiz());
                             break;
                             
                         case "EXIT":

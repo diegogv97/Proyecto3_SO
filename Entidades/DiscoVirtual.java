@@ -246,5 +246,25 @@ public class DiscoVirtual {
             }
             return cantVacios;
 	}
+        
+        
+        public static void printRutasTotales(String nombre, String ext, String ruta, Directorio dir){
+            for(Archivo a : dir.getListaArchivos()){
+                if (nombre.equals("*")){
+                    if (ext.equals(a.getExtension()))
+                        System.out.println(ruta + "/" + nombre + "." + ext);
+                }
+                else{
+                    if(nombre.equals(a.getNombre()) && ext.equals(a.getExtension()))
+                        System.out.println(ruta + "/" + nombre + "." + ext);
+                }
+            }
+            for(Directorio d : dir.getListaDirectorios()){
+                if(d.getNombre().equals(nombre + ext)){
+                    System.out.println(ruta);
+                }
+                printRutasTotales(nombre, ext, ruta+"/"+d.getNombre(), d);
+            }
+        }
          
 }
