@@ -38,7 +38,7 @@ public class Proyecto3_SO {
                 System.out.println("               Diego Guzman");
                 System.out.println("               Josue Morales\n\n");
                 while(true){
-                    System.out.print(dirRaiz + "/:  > ");
+                    System.out.print(dirRaiz + "> ");
                     input = br.readLine();
                     String[] tokens = input.split(" ");
                     String comando = tokens[0];
@@ -69,12 +69,22 @@ public class Proyecto3_SO {
                                 break;
                             }
                             Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
+                            boolean reemplazar = false;
                             if(dir_actual.existeArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension())){
-                            	System.out.println("El nombre de archivo ya existe");
-                            	break;
+                                input = "";
+                            	while(!(input.equals("N") || input.equals("n") || input.equals("Y") || input.equals("y"))){
+                                    System.out.println("El nombre de archivo ya existe. Desea sobreescribirlo? Y/N : ");
+                                    input = br.readLine();
+                                    if(input.equals("Y") || input.equals("y")){
+                                          reemplazar = true;
+                                    }
+                                }
+                                if (!reemplazar)
+                                    break;
+                            	
                             }
-                            
-                            System.out.print("Ingrese el contenido del archivo. Escriba EOF en la ultima linea para terminar:\n");
+                           
+                            System.out.println("Ingrese el contenido del archivo. Escriba EOF en la ultima linea para terminar:");
                             //input = br.readLine();
                             String aux = "";
                             String contenido = "";
@@ -82,14 +92,35 @@ public class Proyecto3_SO {
                                 contenido += "\n" + aux;
                              }
                             contenido = contenido.substring(1);
-                            
-                            archivoNuevo.setSize(contenido.length());
-                            
-                            if(archivoNuevo.escribirArchivo(contenido)){
-                            	dir_actual.addArchivo(archivoNuevo);
+                            if(reemplazar){
+                                int caracteresSector = (disco_virtual.getTamSectores() /2);
+                                int secArchivo = contenido.length() / caracteresSector;
+                                if((contenido.length() % caracteresSector)!= 0){
+                                        secArchivo++;
+                                }
+                                int cantActuales = 0;
+                                try {
+                                    cantActuales = dir_actual.getArchivo(tokens[1], tokens[2]).getPunteros().length;
+                                } catch (Exception ex) {}
+                                System.out.println(cantActuales);
+                                if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
+                                    dir_actual.borrarArchivo(tokens[1], tokens[2]);
+                                    if(archivoNuevo.escribirArchivo(contenido)){ 
+                                        dir_actual.addArchivo(archivoNuevo);
+                                    }
+                                }
+                                else{
+                                    System.out.println("Espacio insuficiente");
+                                }
+                               
                             }
-                            
+                            else{
+                                if(archivoNuevo.escribirArchivo(contenido)){ 
+                                        dir_actual.addArchivo(archivoNuevo);
+                                }
+                            }
                             break;
+                            
                         //MKDIR [nombre]   
                         case "MKDIR":
                             if (contarParametros(tokens, 1) == true){
@@ -200,10 +231,22 @@ public class Proyecto3_SO {
                             String ok = br.readLine();
                             if(ok.equals("OK")){
                                 String nuevoContenido = ta.getText();
-                                if (nuevoContenido.length() <= disco_virtual.getTamSectores()*disco_virtual.cantSectoresVacios()){
-                                    arch_buscado.borrarContenido();
-                                    arch_buscado.setPunteros(disco_virtual.escribirSectores(nuevoContenido, arch_buscado.getPunteros()));
+                                int caracteresSector = (disco_virtual.getTamSectores() /2);
+                                int secArchivo = nuevoContenido.length() / caracteresSector;
+                                if((nuevoContenido.length() % caracteresSector)!= 0){
+                                        secArchivo++;
                                 }
+                                int cantActuales = 0;
+                                try {
+                                    cantActuales = dir_actual.getArchivo(tokens[1], tokens[2]).getPunteros().length;
+                                } catch (Exception ex) {}
+                                System.out.println(cantActuales);
+                                if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
+                                    arch_buscado.borrarContenido();
+                                    arch_buscado.escribirArchivo(nuevoContenido);
+                                    
+                                }
+                                
                                 else{
                                     System.out.print("No hay suficiente espacio para almacenar el contenido nuevo");
                                 }
@@ -215,7 +258,7 @@ public class Proyecto3_SO {
                             
                         case "PPT":
                             boolean isFile = false;
-                            if (contarParametros(tokens, 1) == false){
+                            if (contarParametros(tokens, 1) == true){
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
