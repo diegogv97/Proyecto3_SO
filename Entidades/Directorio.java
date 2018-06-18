@@ -67,7 +67,7 @@ public class Directorio {
     
     public void remplazarDirectorio(Directorio nuevo){
         try {
-            directorios.remove(getIndexDirectorio(nuevo.getNombre()));
+            borrarDirectorio(nuevo.getNombre());
             directorios.add(nuevo);
         } catch (Exception ex) {
             System.out.println("Ha ocurrido un error inesperado");
