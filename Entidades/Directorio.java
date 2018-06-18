@@ -67,7 +67,7 @@ public class Directorio {
     
     public void remplazarDirectorio(Directorio nuevo){
         try {
-            directorios.remove(getIndexDirectorio(nuevo.getNombre()));
+            borrarDirectorio(nuevo.getNombre());
             directorios.add(nuevo);
         } catch (Exception ex) {
             System.out.println("Ha ocurrido un error inesperado");
@@ -217,6 +217,64 @@ public class Directorio {
                 break;
             }
         }
-
+    }
+    
+    public void borrarContenidoDirectorio(String borrar){
+        int index = 0;
+        for (Directorio d : directorios){
+            if (d.getNombre().equals(borrar)){
+                d.aux_borrarDirectorio();
+                break;
+            }
+            index++;
+        }
+        
+    }
+    
+    public void borrarDirectorio(String borrar){
+        for (Directorio d : directorios){
+            if (d.getNombre().equals(borrar)){
+                d.aux_borrarDirectorio();
+                directorios.remove(d);
+                break;
+            }
+        }
+    }
+    
+    private void aux_borrarDirectorio(){
+        for (Archivo a : archivos){
+            a.borrarContenido();
+        }
+        
+        for (Directorio d : directorios){
+            d.aux_borrarDirectorio();
+        }
+        directorios.removeAll(directorios);
+        archivos.removeAll(archivos);
+    }
+    
+    public boolean reemplazarArchivo(String contenido, Archivo archivoNuevo){
+        DiscoVirtual disco_virtual = DiscoVirtual.getInstance(0, 0, "");
+        int caracteresSector = (disco_virtual.getTamSectores() /2);
+        int secArchivo = contenido.length() / caracteresSector;
+        if((contenido.length() % caracteresSector)!= 0){
+                secArchivo++;
+        }
+        int cantActuales = 0;
+        try {
+            cantActuales = getArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension()).getPunteros().length;
+        } catch (Exception ex) {}
+        System.out.println(cantActuales);
+        if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
+            borrarArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension());
+            if(archivoNuevo.escribirArchivo(contenido)){ 
+                addArchivo(archivoNuevo);
+            }
+        }
+        else{
+            System.out.println("Espacio insuficiente");
+            return false;
+        }
+        return true;
     }
 }

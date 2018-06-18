@@ -26,9 +26,10 @@ public class Proyecto3_SO {
         String input = "";
         DiscoVirtual disco_virtual = null;
         Directorio dir_actual = null;
+
         
         String dirRaiz = "";
-
+        Directorio raiz = null; 
 
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
@@ -61,6 +62,7 @@ public class Proyecto3_SO {
                             //int l[] = disco_virtual.escribirSectores("HOLA", new int[0]);
                             
                             dir_actual = disco_virtual.getRaiz();
+                            raiz = disco_virtual.getRaiz();
                             break;
                         //FLE [nombre] [extencion]
                         case "FLE":
@@ -69,12 +71,22 @@ public class Proyecto3_SO {
                                 break;
                             }
                             Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
+                            boolean reemplazar = false;
                             if(dir_actual.existeArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension())){
-                            	System.out.println("El nombre de archivo ya existe");
-                            	break;
+                                input = "";
+                            	while(!(input.equals("N") || input.equals("n") || input.equals("Y") || input.equals("y"))){
+                                    System.out.println("El nombre de archivo ya existe. Desea sobreescribirlo? Y/N : ");
+                                    input = br.readLine();
+                                    if(input.equals("Y") || input.equals("y")){
+                                          reemplazar = true;
+                                    }
+                                }
+                                if (!reemplazar)
+                                    break;
+                            	
                             }
-                            
-                            System.out.print("Ingrese el contenido del archivo. Escriba EOF en la ultima linea para terminar:\n");
+                           
+                            System.out.println("Ingrese el contenido del archivo. Escriba EOF en la ultima linea para terminar:");
                             //input = br.readLine();
                             String aux = "";
                             String contenido = "";
@@ -82,14 +94,17 @@ public class Proyecto3_SO {
                                 contenido += "\n" + aux;
                              }
                             contenido = contenido.substring(1);
-                            
-                            archivoNuevo.setSize(contenido.length());
-                            
-                            if(archivoNuevo.escribirArchivo(contenido)){
-                            	dir_actual.addArchivo(archivoNuevo);
+                            if(reemplazar){
+                                dir_actual.reemplazarArchivo(contenido, archivoNuevo);
+                               
                             }
-                            
+                            else{
+                                if(archivoNuevo.escribirArchivo(contenido)){ 
+                                        dir_actual.addArchivo(archivoNuevo);
+                                }
+                            }
                             break;
+                            
                         //MKDIR [nombre]   
                         case "MKDIR":
                             if (contarParametros(tokens, 1) == true){
@@ -200,10 +215,22 @@ public class Proyecto3_SO {
                             String ok = br.readLine();
                             if(ok.equals("OK")){
                                 String nuevoContenido = ta.getText();
-                                if (nuevoContenido.length() <= disco_virtual.getTamSectores()*disco_virtual.cantSectoresVacios()){
-                                    arch_buscado.borrarContenido();
-                                    arch_buscado.setPunteros(disco_virtual.escribirSectores(nuevoContenido, arch_buscado.getPunteros()));
+                                int caracteresSector = (disco_virtual.getTamSectores() /2);
+                                int secArchivo = nuevoContenido.length() / caracteresSector;
+                                if((nuevoContenido.length() % caracteresSector)!= 0){
+                                        secArchivo++;
                                 }
+                                int cantActuales = 0;
+                                try {
+                                    cantActuales = dir_actual.getArchivo(tokens[1], tokens[2]).getPunteros().length;
+                                } catch (Exception ex) {}
+                                System.out.println(cantActuales);
+                                if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
+                                    arch_buscado.borrarContenido();
+                                    arch_buscado.escribirArchivo(nuevoContenido);
+                                    
+                                }
+                                
                                 else{
                                     System.out.print("No hay suficiente espacio para almacenar el contenido nuevo");
                                 }
@@ -215,22 +242,30 @@ public class Proyecto3_SO {
                             
                         case "PPT":
                             boolean isFile = false;
-                            if (contarParametros(tokens, 1) == false){
+                            if (contarParametros(tokens, 1) == true){
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
                             
                             String nom_archivo = input.substring("PPT ".length());
-                            for (Archivo a: dir_actual.getListaArchivos()){
-                                if(nom_archivo.equals(a.getNombre())){
-                                    System.out.println("Extension: "+a.getExtension());
-                                    System.out.println("Fecha creacion: "+a.getFecha_creacion());
-                                    System.out.println("Fecha modificacion: "+a.getFecha_modificacion());
-                                    System.out.println("Tamaño: "+a.getSize());
-                                    isFile = true;
-                                    break;
+                            
+                            String[] posible_extensionPPT = nom_archivo.split("\\.");
+                            
+                            if(posible_extensionPPT.length >= 2){
+                                String ext = posible_extensionPPT[(posible_extensionPPT.length) -1];
+                                String name = nom_archivo.substring(0, nom_archivo.lastIndexOf("." + ext));
+                                for (Archivo a: dir_actual.getListaArchivos()){
+                                    if(name.equals(a.getNombre()) && ext.equals(a.getExtension())){
+                                        System.out.println("Extension: "+a.getExtension());
+                                        System.out.println("Fecha creacion: "+a.getFecha_creacion());
+                                        System.out.println("Fecha modificacion: "+a.getFecha_modificacion());
+                                        System.out.println("Tamaño: "+a.getSize());
+                                        isFile = true;
+                                        break;
+                                    }
                                 }
                             }
+                            
                             if(!isFile)
                                 System.out.println("Archivo no existe en el directorio "+dir_actual.getNombre());
                             break;
@@ -342,6 +377,28 @@ public class Proyecto3_SO {
                             break;
                             
                         case "MOV":
+                            if (contarParametros(tokens, 2+1) == false){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                            String nom_arch = tokens[1];
+                            String dir_mover = tokens[2];
+                          
+                            
+                            for(Archivo a:dir_actual.getListaArchivos()){
+                                if(nom_arch.equals(a.getNombre())){
+                                    if(buscarDir(a, raiz)){
+                                        dir_actual.getListaArchivos().remove(a);
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                            
+                            
+                            
+                            
+                            
                             break;
                             
                         case "REM":
@@ -355,7 +412,12 @@ public class Proyecto3_SO {
                             String[] posible_extension = remover.split("\\.");
                             
                             if(posible_extension.length == 1){
-                                //es directorio
+                                if (dir_actual.existeDirectorio(remover)){
+                                    dir_actual.borrarDirectorio(remover);
+                                }
+                                else{
+                                    System.out.println("archivo o directorio no existe en el directorio actual");
+                                }
                             }
                             else{
                                 String ext = posible_extension[(posible_extension.length) -1];
@@ -364,7 +426,8 @@ public class Proyecto3_SO {
                                     dir_actual.borrarArchivo(name, ext);
                                 }
                                 else if(dir_actual.existeDirectorio(remover)){
-                                    //es directorio
+                                    dir_actual.borrarContenidoDirectorio(remover);
+                                    dir_actual.borrarDirectorio(remover);
                                 }
                                 else{
                                     System.out.println("archivo o directorio no existe en el directorio actual");
@@ -375,7 +438,7 @@ public class Proyecto3_SO {
                             
                             break;
                         case "TREE":
-                            Directorio raiz = disco_virtual.getRaiz();
+                            
                             
                             System.out.println(raiz.getNombre());
                             recorrer(raiz,0); 
@@ -437,6 +500,7 @@ public class Proyecto3_SO {
         
     }
     
+
     static void imprimirTabs(int tabs){
         //System.out.println("");
         for(int i=0;i<tabs;i++){
@@ -449,5 +513,19 @@ public class Proyecto3_SO {
         for (String t : tokens)
             contador++;
         return (contador == cantParametros);
+    }
+
+  static boolean buscarDir(Archivo arch, Directorio dir){
+        
+        for(Directorio d: dir.getListaDirectorios()){
+            if (dir.getNombre().equals(d.getNombre())){
+                d.addArchivo(arch);
+                System.out.println("Archivo agregado");
+                return true;
+            }
+            buscarDir(arch,d);
+        }
+        return false; 
+        
     }
 }
