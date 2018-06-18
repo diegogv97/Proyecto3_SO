@@ -68,11 +68,12 @@ public class Proyecto3_SO {
                             break;
                         //FLE [nombre] [extencion]
                         case "FLE":
-                            if (contarParametros(tokens, 2+1) == false){
+                            if (contarParametros(tokens, 2) == false){
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            Archivo archivoNuevo = new Archivo(tokens[1], tokens[2], (new Date()).toString(), 0);
+                            String[] tokensAux = tokens[1].split("\\.");
+                            Archivo archivoNuevo = new Archivo(tokensAux[0], tokensAux[1], (new Date()).toString(), 0);
                             boolean reemplazar = false;
                             if(dir_actual.existeArchivo(archivoNuevo.getNombre(), archivoNuevo.getExtension())){
                                 input = "";
@@ -224,9 +225,9 @@ public class Proyecto3_SO {
                                 }
                                 int cantActuales = 0;
                                 try {
-                                    cantActuales = dir_actual.getArchivo(tokens[1], tokens[2]).getPunteros().length;
+                                    cantActuales = dir_actual.getArchivo(arch_buscado.getNombre(), arch_buscado.getExtension()).getPunteros().length;
                                 } catch (Exception ex) {}
-                                System.out.println(cantActuales);
+                                //System.out.println(cantActuales);
                                 if(disco_virtual.cantSectoresVacios() + cantActuales >= secArchivo){
                                     arch_buscado.borrarContenido();
                                     arch_buscado.escribirArchivo(nuevoContenido);
@@ -234,7 +235,7 @@ public class Proyecto3_SO {
                                 }
                                 
                                 else{
-                                    System.out.print("No hay suficiente espacio para almacenar el contenido nuevo");
+                                    System.out.println("No hay suficiente espacio para almacenar el contenido nuevo");
                                 }
                                 frame.setVisible(false);
                             }
@@ -277,11 +278,13 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String archivoV = input.substring("VIEW ".length());
-                            String[] temp_extension = archivoV.split("\\.");
-                            String extension = temp_extension[(temp_extension.length)-1];
-                            String nombre = archivoV.substring(0, archivoV.lastIndexOf("." + extension));
+                            
                             try {
+                            	String archivoV = input.substring("VIEW ".length());
+                                String[] temp_extension = archivoV.split("\\.");
+                                String extension = temp_extension[(temp_extension.length)-1];
+                                String nombre = archivoV.substring(0, archivoV.lastIndexOf("." + extension));
+                                
                                 Archivo arch_buscadoV = dir_actual.getArchivo(nombre, extension);
                                 System.out.println(arch_buscadoV.getContenido());
                             } 
@@ -350,13 +353,14 @@ public class Proyecto3_SO {
                                                   reemplazarCPY = true;
                                             }
                                         }
-                                        if (reemplazarCPY){
-                                        	destino.reemplazarArchivo(archivo1.getContenido(), archivo2);
-                                        }else{
-                                        	if(archivo2.escribirArchivo(archivo1.getContenido())){
-                                        		destino.addArchivo(archivo2);
-                                    		}
-                                        }
+                                    }
+                                    
+                                    if (reemplazarCPY){
+                                    	destino.reemplazarArchivo(archivo1.getContenido(), archivo2);
+                                    }else{
+                                    	if(archivo2.escribirArchivo(archivo1.getContenido())){
+                                    		destino.addArchivo(archivo2);
+                                		}
                                     }
                         		}else{
                         			//Copiando de ruta VIRTUAL a ruta REAL
@@ -390,13 +394,14 @@ public class Proyecto3_SO {
                                                           reemplazarCPY = true;
                                                     }
                                                 }
-                                                if (reemplazarCPY){
-                                                	destino.reemplazarArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal), archivo2);
-                                                }else{
-                                                	if(archivo2.escribirArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal))){
-                                        				destino.addArchivo(archivo2);
-                                        			}
-                                                }
+                                            }
+                                            
+                                            if (reemplazarCPY){
+                                            	destino.reemplazarArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal), archivo2);
+                                            }else{
+                                            	if(archivo2.escribirArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal))){
+                                    				destino.addArchivo(archivo2);
+                                    			}
                                             }
                             			}
                         			}
@@ -419,7 +424,7 @@ public class Proyecto3_SO {
                             if(in.length == 1){
                                 for(Directorio d:dir_actual.getListaDirectorios()){
                                     if(in[0].equals(d.getNombre())){
-                                        if(buscarDirDir(d, dir_mover,2,raiz)){ //2 DESPUES DE DIR RAIZ
+                                        if(buscarDirDir(d, dir_mover,1,raiz)){ //2 DESPUES DE DIR RAIZ
                                             dir_actual.getListaDirectorios().remove(d);
                                             System.out.println("Directorio movido");
                                             break;
@@ -434,7 +439,7 @@ public class Proyecto3_SO {
                             else{
                                 for(Archivo a:dir_actual.getListaArchivos()){
                                     if(in[0].equals(a.getNombre())){
-                                        if(buscarDirArch(a, dir_mover,2,raiz)){ //2 DESPUES DE DIR RAIZ
+                                        if(buscarDirArch(a, dir_mover,1,raiz)){ //2 DESPUES DE DIR RAIZ
                                             dir_actual.getListaArchivos().remove(a);
                                             System.out.println("Archivo movido");
                                             break;

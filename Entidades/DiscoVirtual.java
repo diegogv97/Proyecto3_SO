@@ -113,6 +113,9 @@ public class DiscoVirtual {
 					if(texto.equals("<----- Sector " + (sector + 1) + " ----->")){
 						break;
 					}
+					if(!contenidoSector.isEmpty()){
+						contenidoSector += "\n";
+					}
 					contenidoSector += texto;
 				}
 			}

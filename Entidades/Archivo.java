@@ -1,5 +1,7 @@
 package Entidades;
 
+import java.util.Date;
+
 public class Archivo {
     private String nombre;
     private String extension;
@@ -68,8 +70,9 @@ public class Archivo {
     public boolean escribirArchivo(String contenido){
     	DiscoVirtual discoVirtual = DiscoVirtual.getInstance(0, 0, "");
         punteros = discoVirtual.escribirSectores(contenido, punteros);
-        System.out.println(punteros.length);
+        //System.out.println(punteros.length);
         size = contenido.length() * 2;
+        fecha_modificacion = new Date().toString();
         
         // Si el archivo necesitaba mayor cantidad de sectores de los que estan disponibles en el disco virtual,
         // limpia los sectores que le asigno al archivo e indica que no se pudo guardar
