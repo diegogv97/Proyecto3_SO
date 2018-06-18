@@ -152,6 +152,32 @@ public class Directorio {
     	return null;
     }
     
+    public boolean existeDirectorioRuta(String[] ruta){
+    	if(ruta.length == 0){
+    		return true;
+    	}else if(ruta.length == 1){
+    		if(existeDirectorio(ruta[0])){
+    			return true;
+    		}
+    	}else{
+    		if(existeDirectorio(ruta[0])){
+    			Directorio temp = null;
+    			try{
+    				temp = getDirectorio(ruta[0]);
+    			}catch(Exception e){
+    				
+    			}
+    			if(temp != null){
+    				return temp.existeDirectorioRuta(Arrays.copyOfRange(ruta, 1, ruta.length));
+    			}else{
+    				return false;
+    			}
+    			
+    		}
+    	}
+    	return false;
+    }
+    
     public Directorio getDirectorioRuta(String[] ruta){
     	if(ruta.length == 0){
     		return this;
