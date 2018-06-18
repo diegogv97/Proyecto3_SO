@@ -339,7 +339,12 @@ public class Proyecto3_SO {
                             String[] posible_extension = remover.split("\\.");
                             
                             if(posible_extension.length == 1){
-                                //es directorio
+                                if (dir_actual.existeDirectorio(remover)){
+                                    dir_actual.borrarDirectorio(remover);
+                                }
+                                else{
+                                    System.out.println("archivo o directorio no existe en el directorio actual");
+                                }
                             }
                             else{
                                 String ext = posible_extension[(posible_extension.length) -1];
@@ -348,7 +353,8 @@ public class Proyecto3_SO {
                                     dir_actual.borrarArchivo(name, ext);
                                 }
                                 else if(dir_actual.existeDirectorio(remover)){
-                                    //es directorio
+                                    dir_actual.borrarContenidoDirectorio(remover);
+                                    dir_actual.borrarDirectorio(remover);
                                 }
                                 else{
                                     System.out.println("archivo o directorio no existe en el directorio actual");

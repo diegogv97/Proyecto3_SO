@@ -191,6 +191,39 @@ public class Directorio {
                 break;
             }
         }
-
+    }
+    
+    public void borrarContenidoDirectorio(String borrar){
+        int index = 0;
+        for (Directorio d : directorios){
+            if (d.getNombre().equals(borrar)){
+                d.aux_borrarDirectorio();
+                break;
+            }
+            index++;
+        }
+        
+    }
+    
+    public void borrarDirectorio(String borrar){
+        for (Directorio d : directorios){
+            if (d.getNombre().equals(borrar)){
+                d.aux_borrarDirectorio();
+                directorios.remove(d);
+                break;
+            }
+        }
+    }
+    
+    private void aux_borrarDirectorio(){
+        for (Archivo a : archivos){
+            a.borrarContenido();
+        }
+        
+        for (Directorio d : directorios){
+            d.aux_borrarDirectorio();
+        }
+        directorios.removeAll(directorios);
+        archivos.removeAll(archivos);
     }
 }
