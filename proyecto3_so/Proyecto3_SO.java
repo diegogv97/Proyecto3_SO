@@ -24,9 +24,10 @@ public class Proyecto3_SO {
         String input = "";
         DiscoVirtual disco_virtual = null;
         Directorio dir_actual = null;
+
         
         String dirRaiz = "";
-
+        Directorio raiz = disco_virtual.getRaiz();
 
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
@@ -326,6 +327,28 @@ public class Proyecto3_SO {
                             
                             
                         case "MOV":
+                            if (contarParametros(tokens, 2+1) == false){
+                                System.out.println("Parametros incorrectos");
+                                break;
+                            }
+                            String nom_arch = tokens[1];
+                            String dir_mover = tokens[2];
+                          
+                            
+                            for(Archivo a:dir_actual.getListaArchivos()){
+                                if(nom_arch.equals(a.getNombre())){
+                                    if(buscarDir(a, raiz)){
+                                        dir_actual.getListaArchivos().remove(a);
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                            
+                            
+                            
+                            
+                            
                             break;
                             
                         case "REM":
@@ -359,7 +382,7 @@ public class Proyecto3_SO {
                             
                             break;
                         case "TREE":
-                            Directorio raiz = disco_virtual.getRaiz();
+                            
                             
                             System.out.println(raiz.getNombre());
                             recorrer(raiz,0); 
@@ -421,6 +444,7 @@ public class Proyecto3_SO {
         
     }
     
+
     static void imprimirTabs(int tabs){
         //System.out.println("");
         for(int i=0;i<tabs;i++){
@@ -454,4 +478,17 @@ public class Proyecto3_SO {
 		}
     	return archivo;
     }*/
+  static boolean buscarDir(Archivo arch, Directorio dir){
+        
+        for(Directorio d: dir.getListaDirectorios()){
+            if (dir.getNombre().equals(d.getNombre())){
+                d.addArchivo(arch);
+                System.out.println("Archivo agregado");
+                return true;
+            }
+            buscarDir(arch,d);
+        }
+        return false; 
+        
+    }
 }
