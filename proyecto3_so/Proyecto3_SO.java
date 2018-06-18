@@ -27,7 +27,7 @@ public class Proyecto3_SO {
 
         
         String dirRaiz = "";
-        Directorio raiz = disco_virtual.getRaiz();
+        Directorio raiz = null;
 
         try {
             br = new BufferedReader(new InputStreamReader(System.in));
@@ -60,6 +60,7 @@ public class Proyecto3_SO {
                             //int l[] = disco_virtual.escribirSectores("HOLA", new int[0]);
                             
                             dir_actual = disco_virtual.getRaiz();
+                            raiz = disco_virtual.getRaiz();
                             break;
                         //FLE [nombre] [extencion]
                         case "FLE":
@@ -214,7 +215,7 @@ public class Proyecto3_SO {
                             
                         case "PPT":
                             boolean isFile = false;
-                            if (contarParametros(tokens, 1) == false){
+                            if (contarParametros(tokens, 1) == true){
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
@@ -331,23 +332,42 @@ public class Proyecto3_SO {
                                 System.out.println("Parametros incorrectos");
                                 break;
                             }
-                            String nom_arch = tokens[1];
-                            String dir_mover = tokens[2];
-                          
+                            String path = tokens[2];
+                            String[] dir_mover = path.split("/");
                             
-                            for(Archivo a:dir_actual.getListaArchivos()){
-                                if(nom_arch.equals(a.getNombre())){
-                                    if(buscarDir(a, raiz)){
-                                        dir_actual.getListaArchivos().remove(a);
-                                        break;
+                            String posible_ext = tokens[1];
+                            String[] in = posible_ext.split("\\.");
+                            
+                            //Directorio
+                            if(in.length == 1){
+                                for(Directorio d:dir_actual.getListaDirectorios()){
+                                    if(in[0].equals(d.getNombre())){
+                                        if(buscarDirDir(d, dir_mover,2,raiz)){ //2 DESPUES DE DIR RAIZ
+                                            dir_actual.getListaDirectorios().remove(d);
+                                            System.out.println("Directorio movido");
+                                            break;
+                                        }
+                                        else
+                                            System.out.println("Directorio destino incorrecto");
                                     }
+                                
                                 }
                                 
                             }
-                            
-                            
-                            
-                            
+                            else{
+                                for(Archivo a:dir_actual.getListaArchivos()){
+                                    if(in[0].equals(a.getNombre())){
+                                        if(buscarDirArch(a, dir_mover,2,raiz)){ //2 DESPUES DE DIR RAIZ
+                                            dir_actual.getListaArchivos().remove(a);
+                                            System.out.println("Archivo movido");
+                                            break;
+                                        }
+                                        else
+                                            System.out.println("Directorio destino incorrecto");
+                                    }
+                                
+                                }
+                            }
                             
                             break;
                             
@@ -478,17 +498,51 @@ public class Proyecto3_SO {
 		}
     	return archivo;
     }*/
-  static boolean buscarDir(Archivo arch, Directorio dir){
+  static boolean buscarDirArch(Archivo arch, String[] dir,int posicion_dir,Directorio dirActual){
         
-        for(Directorio d: dir.getListaDirectorios()){
-            if (dir.getNombre().equals(d.getNombre())){
-                d.addArchivo(arch);
-                System.out.println("Archivo agregado");
-                return true;
+        while(posicion_dir<dir.length){
+            for(Directorio d: dirActual.getListaDirectorios()){
+                if (dir[posicion_dir].equals(d.getNombre())){
+                    return buscarDirArch(arch,dir,posicion_dir+1,d); 
+                    
+                }
+                
             }
-            buscarDir(arch,d);
+            return false;
+            
+            
         }
+        
+        if(posicion_dir==dir.length){
+            dirActual.addArchivo(arch);
+            return true;
+        }
+        
         return false; 
         
     }
+  static boolean buscarDirDir(Directorio dir_cambiar, String[] dir,int posicion_dir,Directorio dirActual){
+        
+        while(posicion_dir<dir.length){
+            for(Directorio d: dirActual.getListaDirectorios()){
+                if (dir[posicion_dir].equals(d.getNombre())){
+                    return buscarDirDir(dir_cambiar,dir,posicion_dir+1,d); 
+                    
+                }
+          
+            }
+            return false;
+            
+            
+        }
+        
+        if(posicion_dir==dir.length){
+            dirActual.addDirectorio(dir_cambiar);
+            return true;
+        }
+        
+        return false; 
+        
+    }
+  
 }
