@@ -335,17 +335,27 @@ public class Proyecto3_SO {
                         		if(raizTemp.getNombre().equals(nomRaiz2) && raizTemp.existeDirectorioRuta(ruta2)){
                         			//Directorio de ruta virtual
                             		archivo2 = new Archivo(archivo1.getNombre(), archivo1.getExtension(), new Date().toString(), archivo1.getSize());
-                            		//if(raizTemp.existeDirectorioRuta(ruta2)){
-                            			destino = raizTemp.getDirectorioRuta(ruta2);
-                                		if(archivo2.escribirArchivo(archivo1.getContenido())){
-                                    		destino.addArchivo(archivo2);
-                                		}
-                                		/*
-                                		 * 
-                                		 * TAMBIEN FALTA QUE SOBREESCRIBA SI YA EXISTE
-                                		 * 
-                                		 */
-                            		//}
+                            		
+                            		destino = raizTemp.getDirectorioRuta(ruta2);
+                            		
+                            		boolean reemplazarCPY = false;
+                                    if(destino.existeArchivo(archivo1.getNombre(), archivo1.getExtension())){
+                                        input = "";
+                                    	while(!(input.equals("N") || input.equals("n") || input.equals("Y") || input.equals("y"))){
+                                            System.out.println("El nombre de archivo ya existe. Desea sobreescribirlo? Y/N : ");
+                                            input = br.readLine();
+                                            if(input.equals("Y") || input.equals("y")){
+                                                  reemplazarCPY = true;
+                                            }
+                                        }
+                                        if (reemplazarCPY){
+                                        	destino.reemplazarArchivo(archivo1.getContenido(), archivo2);
+                                        }else{
+                                        	if(archivo2.escribirArchivo(archivo1.getContenido())){
+                                        		destino.addArchivo(archivo2);
+                                    		}
+                                        }
+                                    }
                         		}else{
                         			//Copiando de ruta VIRTUAL a ruta REAL
                         			String[] rutaAux = tokens[2].split("/");
@@ -367,9 +377,25 @@ public class Proyecto3_SO {
                             			archivo2 = new Archivo(nombreArch[0], nombreArch[1], new Date().toString(), 0);
                             			if(raizTemp.existeDirectorioRuta(ruta2)){
                             				destino = raizTemp.getDirectorioRuta(ruta2);
-                                			if(archivo2.escribirArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal))){
-                                				destino.addArchivo(archivo2);
-                                			}
+                            				
+                            				boolean reemplazarCPY = false;
+                                            if(destino.existeArchivo(archivo2.getNombre(), archivo2.getExtension())){
+                                                input = "";
+                                            	while(!(input.equals("N") || input.equals("n") || input.equals("Y") || input.equals("y"))){
+                                                    System.out.println("El nombre de archivo ya existe. Desea sobreescribirlo? Y/N : ");
+                                                    input = br.readLine();
+                                                    if(input.equals("Y") || input.equals("y")){
+                                                          reemplazarCPY = true;
+                                                    }
+                                                }
+                                                if (reemplazarCPY){
+                                                	destino.reemplazarArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal), archivo2);
+                                                }else{
+                                                	if(archivo2.escribirArchivo(ManejadorArchivos.leerArchivoRuta(rutaReal))){
+                                        				destino.addArchivo(archivo2);
+                                        			}
+                                                }
+                                            }
                             			}
                         			}
                         		}
